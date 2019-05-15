@@ -931,19 +931,19 @@ def get_page2(heading, head, edit, get_page_content = None):
     <!-- for footer -->
     
         </div> <!-- for site wrap -->
-            <!-- <script src="../static/chimper/js/jquery-3.3.1.min.js"></script> -->
-            <script src="../static/chimper/js/jquery-migrate-3.0.1.min.js"></script>
-            <script src="../static/chimper/js/jquery-ui.js"></script>
-            <script src="../static/chimper/js/popper.min.js"></script>
-            <script src="../static/chimper/js/bootstrap.min.js"></script>
-            <script src="../static/chimper/js/owl.carousel.min.js"></script>
-            <script src="../static/chimper/js/jquery.stellar.min.js"></script>
-            <script src="../static/chimper/js/jquery.countdown.min.js"></script>
-            <script src="../static/chimper/js/jquery.magnific-popup.min.js"></script>
-            <script src="../static/chimper/js/bootstrap-datepicker.min.js"></script>
-            <script src="../static/chimper/js/aos.js"></script>
+            <!-- <script src="../cmsimde/static/chimper/js/jquery-3.3.1.min.js"></script> -->
+            <script src="../cmsimde/static/chimper/js/jquery-migrate-3.0.1.min.js"></script>
+            <script src="../cmsimde/static/chimper/js/jquery-ui.js"></script>
+            <script src="../cmsimde/static/chimper/js/popper.min.js"></script>
+            <script src="../cmsimde/static/chimper/js/bootstrap.min.js"></script>
+            <script src="../cmsimde/static/chimper/js/owl.carousel.min.js"></script>
+            <script src="../cmsimde/static/chimper/js/jquery.stellar.min.js"></script>
+            <script src="../cmsimde/static/chimper/js/jquery.countdown.min.js"></script>
+            <script src="../cmsimde/static/chimper/js/jquery.magnific-popup.min.js"></script>
+            <script src="../cmsimde/static/chimper/js/bootstrap-datepicker.min.js"></script>
+            <script src="../cmsimde/static/chimper/js/aos.js"></script>
             <!--
-            <script src="../static/chimper/js/typed.js"></script>
+            <script src="../cmsimde/static/chimper/js/typed.js"></script>
                     <script>
                     var typed = new Typed('.typed-words', {
                     strings: ["Web Apps"," WordPress"," Mobile Apps"],
@@ -956,7 +956,7 @@ def get_page2(heading, head, edit, get_page_content = None):
                     });
                     </script>
             -->
-            <script src="../static/chimper/js/main.js"></script>
+            <script src="../cmsimde/static/chimper/js/main.js"></script>
         </body></html>
         '''
     # enter edit mode
@@ -2325,7 +2325,7 @@ def syntaxhighlight2():
 <script type="text/javascript" src="./../cmsimde/static/syntaxhighlighter/shBrushSql.js"></script>
 <script type="text/javascript" src="./../cmsimde/static/syntaxhighlighter/shBrushXml.js"></script>
 <script type="text/javascript" src="./../cmsimde/static/syntaxhighlighter/shBrushPhp.js"></script>
-<script type="text/javascript" src="./../static/syntaxhighlighter/shBrushLua.js"></script>
+<script type="text/javascript" src="./../cmsimde/static/syntaxhighlighter/shBrushLua.js"></script>
 <script type="text/javascript" src="./../cmsimde/static/syntaxhighlighter/shBrushCpp.js"></script>
 <script type="text/javascript" src="./../cmsimde/static/syntaxhighlighter/shBrushCss.js"></script>
 <script type="text/javascript" src="./../cmsimde/static/syntaxhighlighter/shBrushCSharp.js"></script>
