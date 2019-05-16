@@ -869,10 +869,12 @@ def get_page(heading, edit):
 def get_page2(heading, head, edit, get_page_content = None):
     not_used_head, level, page = parse_content()
     # 直接在此將 /images/ 換為 ./../images/, /downloads/ 換為 ./../downloads/, 以 content 為基準的相對目錄設定
-    page = [w.replace('/images/', './../images/') for w in page]
-    page = [w.replace('/downloads/', './../downloads/') for w in page]
+
+    page = [w.replace('href="/images/', 'href="./../images/') for w in page]
+    page = [w.replace('href="/downloads/', 'href="./../downloads/') for w in page]
     # 假如有 src="/static/ace/則換為 src="./../static/ace/
     page = [w.replace('src="/static/', 'src="./../cmsimde/static/') for w in page]
+
     directory = render_menu2(head, level, page)
     if heading is None:
         heading = head[0]
@@ -887,7 +889,6 @@ def get_page2(heading, head, edit, get_page_content = None):
     pagedata_duplicate = ""
     outstring_list = []
     for i in range(len(page_order_list)):
-        #page_order = head.index(heading)
         page_order = page_order_list[i]
         if page_order == 0:
             last_page = ""
