@@ -1,6 +1,8 @@
 #!/usr/bin/python
-# 導入 os 模組, 主要用來判斷是否以 uwsgi 或一般近端模式執行
-import os
+
+"""Flask 網際伺服器啟動檔案
+"""
+
 # 導入同目錄下的 flaskapp.py
 import flaskapp
 import ssl

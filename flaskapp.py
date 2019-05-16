@@ -1,16 +1,16 @@
 # coding: utf-8
+
+"""Flask 主程式
+"""
+
 from flask import Flask, send_from_directory, request, redirect, \
     render_template, session, make_response, url_for, flash
 import random
 import math
 import os
-# init.py 為自行建立的起始物件
-# import init
 # 利用 nocache.py 建立 @nocache decorator, 讓頁面不會留下 cache
 from nocache import nocache
-# the followings are for cmsimfly
 import re
-import os
 import math
 import hashlib
 # use quote_plus() to generate URL
@@ -18,54 +18,29 @@ import urllib.parse
 # use cgi.escape() to resemble php htmlspecialchars()
 # use cgi.escape() or html.escape to generate data for textarea tag, otherwise Editor can not deal with some Javascript code.
 import cgi
+import os
 import sys
 # for new parse_content function
-#from bs4 import BeautifulSoup
 # 為了使用 bs4.element, 改為 import bs4
 import bs4
 # for ssavePage and savePage
 import shutil
-
+import inspect
+# 針對單一頁面有許多 html 標註時, 增大遞迴圈數設定
 sys.setrecursionlimit(1000000)
 
-# get the current directory of the file
-'''
-from os.path import dirname, realpath
-
-filepath = realpath(__file__)
-
-dir_of_file = dirname(filepath)
-parent_dir_of_file = dirname(dir_of_file)
-parents_parent_dir_of_file = dirname(parent_dir_of_file)
-'''
-'''
-import os,sys,inspect
+# get the parent directory of the file
 currentdir = os.path.dirname(os.path.abspath(inspect.getfile(inspect.currentframe())))
 parentdir = os.path.dirname(currentdir)
 sys.path.insert(0,parentdir) 
-
-import mymodule
-'''
-import os,sys,inspect
-currentdir = os.path.dirname(os.path.abspath(inspect.getfile(inspect.currentframe())))
-parentdir = os.path.dirname(currentdir)
-sys.path.insert(0,parentdir) 
+# 原先使用的 __file__ 所在目錄
 #_curdir = os.path.join(os.getcwd(), os.path.dirname(__file__))
 _curdir = os.path.join(os.getcwd(), parentdir)
 import init
 
 # 由 init.py 中的 uwsgi = False 或 True 決定在 uwsgi 模式或近端模式執行
 
-#ends for cmsimfly
-
-# 假如隨後要利用 blueprint 架構時, 可以將程式放在子目錄中
-# 然後利用 register 方式導入
-# 導入 g1 目錄下的 user1.py
-#import users.g1.user1
-
-# 確定程式檔案所在目錄, 在 Windows 有最後的反斜線
-#_curdir = os.path.join(os.getcwd(), os.path.dirname(__file__))
-# 表示程式在近端執行, 最後必須決定是由 init.py 或此地決定目錄設定
+# 確定程式檔案所在目錄
 config_dir = _curdir + "/config/"
 static_dir = _curdir + "/static/"
 download_dir = _curdir + "/downloads/"
@@ -89,13 +64,13 @@ app.config['download_dir'] = download_dir
 # set the secret key.  keep this really secret:
 app.secret_key = 'A0Zr9@8j/3yX R~XHH!jmN]LWX/,?R@T'
 
-# 子目錄中註冊藍圖位置
-#app.register_blueprint(users.g1.user1.g1app)
-
 
 @app.route('/checkLogin', methods=['POST'])
 def checkLogin():
-    """Check user login process."""
+
+    """Check user login process
+    """
+
     password = request.form["password"]
     site_title, saved_password = parse_config()
     hashed_password = hashlib.sha512(password.encode('utf-8')).hexdigest()
@@ -107,7 +82,10 @@ def checkLogin():
  
 @app.route('/delete_file', methods=['POST'])
 def delete_file():
-    """Delete user uploaded files."""
+    
+    """Delete user uploaded files
+    """
+    
     if not isAdmin():
         return redirect("/login")
     head, level, page = parse_content()
@@ -138,7 +116,10 @@ def delete_file():
 
 @app.route('/doDelete', methods=['POST'])
 def doDelete():
-    """Action to delete user uploaded files."""
+
+    """Action to delete user uploaded files
+    """
+    
     if not isAdmin():
         return redirect("/login")
     # delete files
@@ -170,7 +151,10 @@ def doDelete():
 
 @app.route('/doSearch', methods=['POST'])
 def doSearch():
-    """Action to search content.htm using keyword"""
+    
+    """Action to search content.htm using keyword
+    """
+    
     if not isAdmin():
         return redirect("/login")
     else:
@@ -191,7 +175,10 @@ def doSearch():
 
 @app.route('/download/', methods=['GET'])
 def download():
-    """Download file using URL."""
+
+    """Download file using URL
+    """
+
     filename = request.args.get('filename')
     type = request.args.get('type')
     if type == "files":
@@ -203,7 +190,10 @@ def download():
 
 @app.route('/download_list', methods=['GET'])
 def download_list():
-    """List files in downloads directory."""
+
+    """List files in downloads directory
+    """
+
     if not isAdmin():
         return redirect("/login")
     else:
@@ -328,7 +318,10 @@ def download_list():
 
 
 def downloadlist_access_list(files, starti, endi):
-    """List files function for download_list."""
+    
+    """List files function for download_list
+    """
+    
     # different extension files, associated links were provided
     # popup window to view images, video or STL files, other files can be downloaded directly
     # files are all the data to list, from starti to endi
@@ -366,13 +359,19 @@ def downloadlist_access_list(files, starti, endi):
 # downloads 方法主要將位於 downloads 目錄下的檔案送回瀏覽器
 @app.route('/downloads/<path:path>')
 def downloads(path):
-    """Send files in downloads directory."""
+
+    """Send files in downloads directory
+    """
+
     return send_from_directory(_curdir+"/downloads/", path)
 
-
-# 與 file_selector 搭配的取檔程式
 def downloadselect_access_list(files, starti, endi):
-    """Accompanied with file_selector."""
+
+    """Accompanied with file_selector
+    
+    與 file_selector 搭配的取檔程式
+    """
+
     outstring = ""
     for index in range(int(starti)-1, int(endi)):
         fileName, fileExtension = os.path.splitext(files[index])
@@ -387,7 +386,10 @@ def downloadselect_access_list(files, starti, endi):
 @app.route('/edit_config', defaults={'edit': 1})
 @app.route('/edit_config/<path:edit>')
 def edit_config(edit):
-    """Config edit html form."""
+
+    """Config edit html form
+    """
+
     head, level, page = parse_content()
     directory = render_menu(head, level, page)
     if not isAdmin():
@@ -412,7 +414,10 @@ def edit_config(edit):
 @app.route('/edit_page', defaults={'edit': 1})
 @app.route('/edit_page/<path:edit>')
 def edit_page(edit):
-    """Page edit html form."""
+
+    """Page edit html form
+    """
+
     # check if administrator
     if not isAdmin():
         return redirect('/login')
