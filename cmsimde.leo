@@ -829,7 +829,7 @@ def get_page(heading, edit):
     not_used_head, level, page = parse_content()
     # 直接在此將 /images/ 換為 ./../images/, /downloads/ 換為 ./../downloads/, 以 content 為基準的相對目錄設定
 
-    page = [w.replace('href="/images/', 'href="./../images/') for w in page]
+    page = [w.replace('src="/images/', 'src="./../images/') for w in page]
     page = [w.replace('href="/downloads/', 'href="./../downloads/') for w in page]
     # 假如有 src="/static/ace/則換為 src="./../static/ace/
     page = [w.replace('src="/static/', 'src="./../cmsimde/static/') for w in page]
