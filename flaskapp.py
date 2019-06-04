@@ -350,8 +350,6 @@ def downloadlist_access_list(files, starti, endi):
         # stl files
         elif fileExtension == ".stl":
             outstring += '<input type="checkbox" name="filename" value="' + \
-                              #files[index] + '"><a href="javascript:;" onClick="window.open(\'/static/viewstl.html?src=' + download_dir + \
-                              # 改為網際絕對目錄連結 stl 檔案
                               files[index] + '"><a href="javascript:;" onClick="window.open(\'/static/viewstl.html?src=' + '/downloads/' + \
                               files[index] + '\',\'images\', \'catalogmode\',\'scrollbars\')">' + \
                               files[index] + '</a> (' + str(fileSize) + ')<br />'
@@ -886,8 +884,8 @@ def get_page2(heading, head, edit, get_page_content = None):
     page = [w.replace('href="/downloads/', 'href="./../downloads/') for w in page]
     # 假如有 src="/static/ace/ 則換為 src="./../static/ace/
     page = [w.replace('src="/static/', 'src="./../cmsimde/static/') for w in page]
-    # 假如有 src="/static/viewstl.html?src=/downloads 則換為 src="/static/viewstl.html?src=./../../downloads
-    page = [w.replace('src="/static/viewstl.html?src=/downloads', 'src="src="/static/viewstl.html?src=./../../downloads') for w in page]
+    # 假如有 src=/downloads 則換為 src=./../../downloads
+    page = [w.replace('src=/downloads', 'src=./../../downloads') for w in page]
 
     directory = render_menu2(head, level, page)
     if heading is None:
