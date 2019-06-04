@@ -37,6 +37,11 @@ sys.path.insert(0,parentdir)
 #_curdir = os.path.join(os.getcwd(), os.path.dirname(__file__))
 _curdir = os.path.join(os.getcwd(), parentdir)
 import init
+try:
+    # 新增 user.py 使用者自訂延伸程式功能, 先前版本若要升級至新版本, 必須新增 user.py 檔案
+    import user
+except:
+    pass
 
 # 由 init.py 中的 uwsgi = False 或 True 決定在 uwsgi 模式或近端模式執行
 
@@ -64,6 +69,11 @@ app.config['download_dir'] = download_dir
 # set the secret key.  keep this really secret:
 app.secret_key = 'A0Zr9@8j/3yX R~XHH!jmN]LWX/,?R@T'
 
+try:
+    # register userapp blueprint app in user.py
+    app.register_blueprint(user.userapp)
+except:
+    pass
 
 @app.route('/checkLogin', methods=['POST'])
 def checkLogin():
@@ -340,7 +350,9 @@ def downloadlist_access_list(files, starti, endi):
         # stl files
         elif fileExtension == ".stl":
             outstring += '<input type="checkbox" name="filename" value="' + \
-                              files[index] + '"><a href="javascript:;" onClick="window.open(\'/static/viewstl.html?src=' + download_dir + \
+                              #files[index] + '"><a href="javascript:;" onClick="window.open(\'/static/viewstl.html?src=' + download_dir + \
+                              # 改為網際絕對目錄連結 stl 檔案
+                              files[index] + '"><a href="javascript:;" onClick="window.open(\'/static/viewstl.html?src=' + '/downloads/' + \
                               files[index] + '\',\'images\', \'catalogmode\',\'scrollbars\')">' + \
                               files[index] + '</a> (' + str(fileSize) + ')<br />'
         # flv files
@@ -872,8 +884,10 @@ def get_page2(heading, head, edit, get_page_content = None):
 
     page = [w.replace('src="/images/', 'src="./../images/') for w in page]
     page = [w.replace('href="/downloads/', 'href="./../downloads/') for w in page]
-    # 假如有 src="/static/ace/則換為 src="./../static/ace/
+    # 假如有 src="/static/ace/ 則換為 src="./../static/ace/
     page = [w.replace('src="/static/', 'src="./../cmsimde/static/') for w in page]
+    # 假如有 src="/static/viewstl.html?src=/downloads 則換為 src="/static/viewstl.html?src=./../../downloads
+    page = [w.replace('src="/static/viewstl.html?src=/downloads', 'src="src="/static/viewstl.html?src=./../../downloads') for w in page]
 
     directory = render_menu2(head, level, page)
     if heading is None:
