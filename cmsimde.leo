@@ -859,7 +859,7 @@ def get_page(heading, edit):
     # 假如有 src=/downloads 則換為 src=./../../downloads
     page = [w.replace('src=/downloads', 'src=./../../downloads') for w in page]
     # 假如有 pythonpath:['/static/'] 則換為 
-    page = [w.replace("pythonpath:['/static/']", "pythonpath:['./../cmsimde/static/']") for w in page]
+    #page = [w.replace("pythonpath:['/static/']", "pythonpath:['./../cmsimde/static/']") for w in page]
 
     directory = render_menu2(head, level, page)
     if heading is None:
