@@ -2291,6 +2291,7 @@ def syntaxhighlight():
 <script type="text/javascript" src="/static/syntaxhighlighter/shBrushJava.js"></script>
 <script type="text/javascript" src="/static/syntaxhighlighter/shBrushPython.js"></script>
 <script type="text/javascript" src="/static/syntaxhighlighter/shBrushSql.js"></script>
+<script type="text/javascript" src="/static/syntaxhighlighter/shBrushHaxe.js"></script>
 <script type="text/javascript" src="/static/syntaxhighlighter/shBrushXml.js"></script>
 <script type="text/javascript" src="/static/syntaxhighlighter/shBrushPhp.js"></script>
 <script type="text/javascript" src="/static/syntaxhighlighter/shBrushLua.js"></script>
@@ -2343,6 +2344,7 @@ def syntaxhighlight2():
 <script type="text/javascript" src="./../cmsimde/static/syntaxhighlighter/shBrushJava.js"></script>
 <script type="text/javascript" src="./../cmsimde/static/syntaxhighlighter/shBrushPython.js"></script>
 <script type="text/javascript" src="./../cmsimde/static/syntaxhighlighter/shBrushSql.js"></script>
+<script type="text/javascript" src="./../cmsimde/static/syntaxhighlighter/shBrushHaxe.js"></script>
 <script type="text/javascript" src="./../cmsimde/static/syntaxhighlighter/shBrushXml.js"></script>
 <script type="text/javascript" src="./../cmsimde/static/syntaxhighlighter/shBrushPhp.js"></script>
 <script type="text/javascript" src="./../cmsimde/static/syntaxhighlighter/shBrushLua.js"></script>
