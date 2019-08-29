@@ -1,5 +1,19 @@
 import ace
+import json
 
+class gist():
+    """gist class to get program from Python gist"""
+    def __init__(self, id, filename):
+        self.id = id
+        self.filename = filename
+        
+    def get_file(self):
+        url = 'https://api.github.com/gists/' + self.id
+        # info is string
+        info = open(url).read()
+        gist = json.loads(info)
+        return gist["files"][self.filename]["content"]
+    
 class editor():
     """ace brython editor"""
     def __init__(self, script, editor_id, console_id, container_id, storage_id):
