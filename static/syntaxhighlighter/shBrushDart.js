@@ -28,7 +28,7 @@
 						'for Function get hide if implements import in interface is' +
 						'library mixin new null on operator part rethrow return set' +
                         'show static super switch sync this throw true try typedef' +
-                        'var void while with yield' +
+                        'var void while with yield'
 						;
 
 		var r = SyntaxHighlighter.regexLib;
@@ -46,7 +46,7 @@
 	};
 
 	Brush.prototype	= new SyntaxHighlighter.Highlighter();
-	Brush.aliases	= ['dart', 'dart'];
+	Brush.aliases	= ['dart'];
 
 	SyntaxHighlighter.brushes.Dart = Brush;
 
