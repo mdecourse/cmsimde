@@ -46,9 +46,9 @@
 	};
 
 	Brush.prototype	= new SyntaxHighlighter.Highlighter();
-	Brush.aliases	= ['js', 'jscript', 'javascript'];
+	Brush.aliases	= ['dart', 'dart'];
 
-	SyntaxHighlighter.brushes.JScript = Brush;
+	SyntaxHighlighter.brushes.Dart = Brush;
 
 	// CommonJS
 	typeof(exports) != 'undefined' ? exports.Brush = Brush : null;
