@@ -885,7 +885,7 @@ def get_page2(heading, head, edit, get_page_content = None):
     # 假如有 src="/static/ace/ 則換為 src="./../static/ace/
     page = [w.replace('src="/static/', 'src="./../cmsimde/static/') for w in page]
     # 假如有 src=/downloads 則換為 src=./../../downloads
-    page = [w.replace('src="/downloads', 'src="./../../downloads') for w in page]
+    page = [w.replace('src="/downloads', 'src="./../downloads') for w in page]
     # 假如有 pythonpath:['/static/'] 則換為 
     page = [w.replace("pythonpath:['/static/']", "pythonpath:['./../cmsimde/static/']") for w in page]
 
