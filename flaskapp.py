@@ -5,6 +5,8 @@
 
 from flask import Flask, send_from_directory, request, redirect, \
     render_template, session, make_response, url_for, flash
+# python -m pip install flask_cors
+from flask_cors import CORS
 import random
 import math
 import os
@@ -58,6 +60,7 @@ uwsgi = init.Init.uwsgi
 
 # 必須先將 download_dir 設為 static_folder, 然後才可以用於 download 方法中的 app.static_folder 的呼叫
 app = Flask(__name__)
+CORS(app, support_credentials=False)
 
 # 設置隨後要在 blueprint 應用程式中引用的 global 變數
 app.config['config_dir'] = config_dir
