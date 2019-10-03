@@ -2247,7 +2247,7 @@ def ssavePage():
 &lt;script src="https://scrum-3.github.io/web/brython/brython_stdlib.js"&gt;&lt;/script&gt;
 --&gt;
 &lt;style&gt;
-img {
+img.border {
     border: 3px solid blue;
 }
 &lt;/style&gt;
@@ -2307,7 +2307,7 @@ init_mathjax();
 &lt;script src="https://scrum-3.github.io/web/brython/brython_stdlib.js"&gt;&lt;/script&gt;
 --&gt;
 &lt;style&gt;
-img {
+img.border {
     border: 3px solid blue;
 }
 &lt;/style&gt;
