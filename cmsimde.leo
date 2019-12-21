@@ -869,7 +869,7 @@ def get_page(heading, edit):
         heading = head[0]
     # 因為同一 heading 可能有多頁, 因此不可使用 head.index(heading) 搜尋 page_order
     page_order_list, page_content_list = search_content(head, page, heading)
-    if get_page_content is not None:
+    if get_page_content != None:
         get_page_content.extend(page_content_list)
     return_content = ""
     pagedata = ""
@@ -1059,7 +1059,7 @@ def image_list():
             keyword = request.args.get('keyword')
             session['image_keyword'] = keyword
     files = os.listdir(image_dir)
-    if keyword is not "":
+    if keyword != "":
         files = [elem for elem in files if str(keyword) in elem]
     files.sort()
     total_rows = len(files)
@@ -1577,7 +1577,7 @@ def download_list():
             keyword = request.args.get('keyword')
             session['download_keyword'] = keyword
     files = os.listdir(download_dir)
-    if keyword is not "":
+    if keyword != "":
         files = [elem for elem in files if str(keyword) in elem]
     files.sort()
     total_rows = len(files)
