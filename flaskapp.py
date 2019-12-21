@@ -19,7 +19,9 @@ import hashlib
 import urllib.parse
 # use cgi.escape() to resemble php htmlspecialchars()
 # use cgi.escape() or html.escape to generate data for textarea tag, otherwise Editor can not deal with some Javascript code.
-import cgi
+# for python 3.8 import html to replace cgi
+from html import escape as html_escape
+#import cgi
 import os
 import sys
 # for new parse_content function
@@ -438,7 +440,9 @@ def edit_page(edit):
         head, level, page = parse_content()
         directory = render_menu(head, level, page)
         pagedata =file_get_contents(config_dir + "content.htm")
-        outstring = tinymce_editor(directory, cgi.escape(pagedata))
+        #outstring = tinymce_editor(directory, cgi.escape(pagedata))
+        # for python 3.8
+        outstring = tinymce_editor(directory, html_escape(pagedata))
         return outstring
 
 
@@ -839,14 +843,14 @@ def get_page(heading, edit):
                                       last_page + " " + next_page + "<br /><hr>"
             pagedata_duplicate = "<h"+level[page_order] + ">" + heading + \
                                           "</h"+level[page_order] + ">" + page_content_list[i]
-            outstring_list.append(last_page + " " + next_page + "<br />" + tinymce_editor(directory, cgi.escape(pagedata_duplicate), page_order))
+            outstring_list.append(last_page + " " + next_page + "<br />" + tinymce_editor(directory, html_escape(pagedata_duplicate), page_order))
         else:
             return_content += last_page + " " + next_page + "<br /><h1>" +\
                                       heading + "</h1>" + page_content_list[i] + "<br />" + last_page + " " + next_page
             
         pagedata += "<h"+level[page_order] + ">" + heading + "</h" + level[page_order] + ">" + page_content_list[i]
-        # 利用 cgi.escape() 將 specialchar 轉成只能顯示的格式
-        outstring += last_page + " " + next_page + "<br />" + tinymce_editor(directory, cgi.escape(pagedata), page_order)
+        # 利用 html_escape() 將 specialchar 轉成只能顯示的格式
+        outstring += last_page + " " + next_page + "<br />" + tinymce_editor(directory, html_escape(pagedata), page_order)
     
     # edit=0 for viewpage
     if edit == 0:
@@ -866,7 +870,7 @@ def get_page(heading, edit):
                 return outstring_duplicate
             else:
             #pagedata = "<h"+level[page_order]+">"+heading+"</h"+level[page_order]+">"+search_content(head, page, heading)
-            #outstring = last_page+" "+next_page+"<br />"+ tinymce_editor(directory, cgi.escape(pagedata), page_order)
+            #outstring = last_page+" "+next_page+"<br />"+ tinymce_editor(directory, html_escape(pagedata), page_order)
                 return outstring
 
 
@@ -923,7 +927,7 @@ def get_page2(heading, head, edit, get_page_content = None):
                                       heading + "</h1>" + page_content_list[i] + \
                                       "<br />" + last_page + " "+ next_page + "<br /><hr>"
             pagedata_duplicate = "<h"+level[page_order] + ">" + heading + "</h" + level[page_order]+">"+page_content_list[i]
-            outstring_list.append(last_page + " " + next_page + "<br />" + tinymce_editor(directory, cgi.escape(pagedata_duplicate), page_order))
+            outstring_list.append(last_page + " " + next_page + "<br />" + tinymce_editor(directory, html_escape(pagedata_duplicate), page_order))
         else:
             return_content += last_page + " " + next_page + "<br /><h1>" + \
                                       heading + "</h1>" + page_content_list[i] + \
@@ -931,8 +935,8 @@ def get_page2(heading, head, edit, get_page_content = None):
             
         pagedata += "<h" + level[page_order] + ">" + heading + \
                           "</h" + level[page_order] + ">" + page_content_list[i]
-        # 利用 cgi.escape() 將 specialchar 轉成只能顯示的格式
-        outstring += last_page + " " + next_page + "<br />" + tinymce_editor(directory, cgi.escape(pagedata), page_order)
+        # 利用 html_escape() 將 specialchar 轉成只能顯示的格式
+        outstring += last_page + " " + next_page + "<br />" + tinymce_editor(directory, html_escape(pagedata), page_order)
     
     # edit=0 for viewpage
     if edit == 0:
@@ -996,7 +1000,7 @@ def get_page2(heading, head, edit, get_page_content = None):
                 return outstring_duplicate
             else:
             #pagedata = "<h" + level[page_order]+">" + heading + "</h" + level[page_order] + ">" + search_content(head, page, heading)
-            #outstring = last_page + " " + next_page + "<br />" + tinymce_editor(directory, cgi.escape(pagedata), page_order)
+            #outstring = last_page + " " + next_page + "<br />" + tinymce_editor(directory, html_escape(pagedata), page_order)
                 return outstring
 
 

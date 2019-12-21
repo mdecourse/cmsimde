@@ -259,7 +259,9 @@ import hashlib
 import urllib.parse
 # use cgi.escape() to resemble php htmlspecialchars()
 # use cgi.escape() or html.escape to generate data for textarea tag, otherwise Editor can not deal with some Javascript code.
-import cgi
+# for python 3.8 import html to replace cgi
+from html import escape as html_escape
+#import cgi
 import os
 import sys
 # for new parse_content function
@@ -381,7 +383,9 @@ def edit_page(edit):
         head, level, page = parse_content()
         directory = render_menu(head, level, page)
         pagedata =file_get_contents(config_dir + "content.htm")
-        outstring = tinymce_editor(directory, cgi.escape(pagedata))
+        #outstring = tinymce_editor(directory, cgi.escape(pagedata))
+        # for python 3.8
+        outstring = tinymce_editor(directory, html_escape(pagedata))
         return outstring
 
 
@@ -810,14 +814,14 @@ def get_page(heading, edit):
                                       last_page + " " + next_page + "&lt;br /&gt;&lt;hr&gt;"
             pagedata_duplicate = "&lt;h"+level[page_order] + "&gt;" + heading + \
                                           "&lt;/h"+level[page_order] + "&gt;" + page_content_list[i]
-            outstring_list.append(last_page + " " + next_page + "&lt;br /&gt;" + tinymce_editor(directory, cgi.escape(pagedata_duplicate), page_order))
+            outstring_list.append(last_page + " " + next_page + "&lt;br /&gt;" + tinymce_editor(directory, html_escape(pagedata_duplicate), page_order))
         else:
             return_content += last_page + " " + next_page + "&lt;br /&gt;&lt;h1&gt;" +\
                                       heading + "&lt;/h1&gt;" + page_content_list[i] + "&lt;br /&gt;" + last_page + " " + next_page
             
         pagedata += "&lt;h"+level[page_order] + "&gt;" + heading + "&lt;/h" + level[page_order] + "&gt;" + page_content_list[i]
-        # 利用 cgi.escape() 將 specialchar 轉成只能顯示的格式
-        outstring += last_page + " " + next_page + "&lt;br /&gt;" + tinymce_editor(directory, cgi.escape(pagedata), page_order)
+        # 利用 html_escape() 將 specialchar 轉成只能顯示的格式
+        outstring += last_page + " " + next_page + "&lt;br /&gt;" + tinymce_editor(directory, html_escape(pagedata), page_order)
     
     # edit=0 for viewpage
     if edit == 0:
@@ -837,7 +841,7 @@ def get_page(heading, edit):
                 return outstring_duplicate
             else:
             #pagedata = "&lt;h"+level[page_order]+"&gt;"+heading+"&lt;/h"+level[page_order]+"&gt;"+search_content(head, page, heading)
-            #outstring = last_page+" "+next_page+"&lt;br /&gt;"+ tinymce_editor(directory, cgi.escape(pagedata), page_order)
+            #outstring = last_page+" "+next_page+"&lt;br /&gt;"+ tinymce_editor(directory, html_escape(pagedata), page_order)
                 return outstring
 
 
@@ -895,7 +899,7 @@ def get_page(heading, edit):
                                       heading + "&lt;/h1&gt;" + page_content_list[i] + \
                                       "&lt;br /&gt;" + last_page + " "+ next_page + "&lt;br /&gt;&lt;hr&gt;"
             pagedata_duplicate = "&lt;h"+level[page_order] + "&gt;" + heading + "&lt;/h" + level[page_order]+"&gt;"+page_content_list[i]
-            outstring_list.append(last_page + " " + next_page + "&lt;br /&gt;" + tinymce_editor(directory, cgi.escape(pagedata_duplicate), page_order))
+            outstring_list.append(last_page + " " + next_page + "&lt;br /&gt;" + tinymce_editor(directory, html_escape(pagedata_duplicate), page_order))
         else:
             return_content += last_page + " " + next_page + "&lt;br /&gt;&lt;h1&gt;" + \
                                       heading + "&lt;/h1&gt;" + page_content_list[i] + \
@@ -903,8 +907,8 @@ def get_page(heading, edit):
             
         pagedata += "&lt;h" + level[page_order] + "&gt;" + heading + \
                           "&lt;/h" + level[page_order] + "&gt;" + page_content_list[i]
-        # 利用 cgi.escape() 將 specialchar 轉成只能顯示的格式
-        outstring += last_page + " " + next_page + "&lt;br /&gt;" + tinymce_editor(directory, cgi.escape(pagedata), page_order)
+        # 利用 html_escape() 將 specialchar 轉成只能顯示的格式
+        outstring += last_page + " " + next_page + "&lt;br /&gt;" + tinymce_editor(directory, html_escape(pagedata), page_order)
     
     # edit=0 for viewpage
     if edit == 0:
@@ -968,7 +972,7 @@ def get_page(heading, edit):
                 return outstring_duplicate
             else:
             #pagedata = "&lt;h" + level[page_order]+"&gt;" + heading + "&lt;/h" + level[page_order] + "&gt;" + search_content(head, page, heading)
-            #outstring = last_page + " " + next_page + "&lt;br /&gt;" + tinymce_editor(directory, cgi.escape(pagedata), page_order)
+            #outstring = last_page + " " + next_page + "&lt;br /&gt;" + tinymce_editor(directory, html_escape(pagedata), page_order)
                 return outstring
 
 
