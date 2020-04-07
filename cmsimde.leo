@@ -10,14 +10,6 @@
 <v t="leo.20190515144024.2"><vh>@data qt-gui-plugin-style-sheet</vh></v>
 <v t="leo.20190515144024.3"><vh>@string initial_split_orientation = horizontal</vh></v>
 </v>
-<v t="leo.20190515143956.2"><vh>@path ./../</vh>
-<v t="leo.20190515144114.1"><vh>@clean init.py</vh>
-<v t="leo.20190515144135.1"><vh>Declarations (init.py)</vh></v>
-<v t="leo.20190515144135.2"><vh>class Init(object)</vh>
-<v t="leo.20190515144135.3"><vh>Init(object).__init__</vh></v>
-</v>
-</v>
-</v>
 <v t="leo.20190515144242.1"><vh>@clean wsgi.py</vh>
 <v t="leo.20190515144254.1"><vh>Declarations (wsgi.py)</vh></v>
 </v>
@@ -102,7 +94,6 @@
 </v>
 </vnodes>
 <tnodes>
-<t tx="leo.20190515143956.2"></t>
 <t tx="leo.20190515144024.1"></t>
 <t tx="leo.20190515144024.2">QSplitter::handle {
     background-color: #CAE1FF; /* lightSteelBlue1 */
@@ -197,41 +188,6 @@ QLineEdit#editorLabel {
 }</t>
 <t tx="leo.20190515144024.3">horizontal: body pane to the left
 vertical: body pane on the botton</t>
-<t tx="leo.20190515144114.1">@others
-@language python
-@tabwidth -4
-</t>
-<t tx="leo.20190515144135.1">import os
-
-"""CMSimfly Initialization setup
-"""
-
-# get current directory, on Windows, back slash at the end of the directory
-_curdir = os.path.join(os.getcwd(), os.path.dirname(__file__))
-# config directory
-config_dir = _curdir + "/config/"
-</t>
-<t tx="leo.20190515144135.2">class Init(object):
-    # uwsgi as static class variable, can be accessed by Init.uwsgi
-    uwsgi = False
-    site_title = "CMSiMDE"
-    @others
-</t>
-<t tx="leo.20190515144135.3">def __init__(self):
-    # hope to create downloads and images directories　
-    if not os.path.isdir(_curdir + "/downloads"):
-        try:
-            os.makedirs(_curdir + "/downloads")
-        except:
-            print("mkdir error")
-    if not os.path.isdir(_curdir + "/images"):
-        try:
-            os.makedirs(_curdir + "/images")
-        except:
-            print("mkdir error")
-
-
-</t>
 <t tx="leo.20190515144224.1"># coding: utf-8
 
 @others
@@ -2784,12 +2740,12 @@ uwsgi = flaskapp.uwsgi
 </t>
 <t tx="leo.20190603204931.1">import os
 
-"""CMSimfly 程式起始設定
+"""CMSimfly Initialization setup
 """
 
-# 確定程式檔案所在目錄, 在 Windows 有最後的反斜線
+# get current directory, on Windows, back slash at the end of the directory
 _curdir = os.path.join(os.getcwd(), os.path.dirname(__file__))
-# 設定在 uwsgi 與近端的資料儲存目錄
+# config directory
 config_dir = _curdir + "/config/"
 </t>
 <t tx="leo.20190603204931.2">class Init(object):
