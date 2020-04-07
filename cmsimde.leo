@@ -203,12 +203,12 @@ vertical: body pane on the botton</t>
 </t>
 <t tx="leo.20190515144135.1">import os
 
-"""CMSimfly 程式起始設定
+"""CMSimfly Initialization setup
 """
 
-# 確定程式檔案所在目錄, 在 Windows 有最後的反斜線
+# get current directory, on Windows, back slash at the end of the directory
 _curdir = os.path.join(os.getcwd(), os.path.dirname(__file__))
-# 設定在 uwsgi 與近端的資料儲存目錄
+# config directory
 config_dir = _curdir + "/config/"
 </t>
 <t tx="leo.20190515144135.2">class Init(object):
@@ -240,7 +240,7 @@ if __name__ == "__main__":
 @language python
 @tabwidth -4
 </t>
-<t tx="leo.20190515144237.1">"""Flask 主程式
+<t tx="leo.20190515144237.1">"""Flask Main program
 """
 
 from flask import Flask, send_from_directory, request, redirect, \
@@ -2753,28 +2753,28 @@ def logout():
 </t>
 <t tx="leo.20190515144242.1">#!/usr/bin/python
 
-"""Flask 網際伺服器啟動檔案
+"""Flask startup script
 """
 
 @others
 if uwsgi:
-    # 表示程式在雲端執行
+    # run on remote site
     application = flaskapp.app
 else:
-    # 表示在近端執行, 以 python3 wsgi.py 執行
+    # on localhost, on Linux or Mac need to use python3 wsgi.py to execute
     flaskapp.app.run(host='127.0.0.1', port=9443, debug=True, ssl_context=context)
 @language python
 @tabwidth -4
 </t>
-<t tx="leo.20190515144254.1"># 導入同目錄下的 flaskapp.py
+<t tx="leo.20190515144254.1"># import flaskapp at the same directory
 import flaskapp
 import ssl
 
-# 即使在近端仍希望以 https 模式下執行
+# even on localhost still use https to access
 context = ssl.SSLContext(ssl.PROTOCOL_TLSv1_2)
 context.load_cert_chain('localhost.crt', 'localhost.key')
 
-# 取 flaskapp.py 中的 uwsgi 變數設定
+# get uwsgi variable value of flaskapp.py
 uwsgi = flaskapp.uwsgi
 </t>
 <t tx="leo.20190603204847.1"></t>

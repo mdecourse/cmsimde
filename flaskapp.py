@@ -1,6 +1,6 @@
 # coding: utf-8
 
-"""Flask 主程式
+"""Flask Main program
 """
 
 from flask import Flask, send_from_directory, request, redirect, \
