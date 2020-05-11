@@ -2294,6 +2294,8 @@ def ssavePage():
 def syntaxhighlight():
     return '''
 <script type="text/javascript" src="/static/syntaxhighlighter/shCore.js"></script>
+<script type="text/javascript" src="/static/syntaxhighlighter/shBrushBash.js"></script>
+<script type="text/javascript" src="/static/syntaxhighlighter/shBrushDiff.js"></script>
 <script type="text/javascript" src="/static/syntaxhighlighter/shBrushJScript.js"></script>
 <script type="text/javascript" src="/static/syntaxhighlighter/shBrushJava.js"></script>
 <script type="text/javascript" src="/static/syntaxhighlighter/shBrushPython.js"></script>
@@ -2352,6 +2354,8 @@ img.add_border {
 def syntaxhighlight2():
     return '''
 <script type="text/javascript" src="./../cmsimde/static/syntaxhighlighter/shCore.js"></script>
+<script type="text/javascript" src="./../cmsimde/static/syntaxhighlighter/shBrushBash.js"></script>
+<script type="text/javascript" src="./../cmsimde/static/syntaxhighlighter/shBrushDiff.js"></script>
 <script type="text/javascript" src="./../cmsimde/static/syntaxhighlighter/shBrushJScript.js"></script>
 <script type="text/javascript" src="./../cmsimde/static/syntaxhighlighter/shBrushJava.js"></script>
 <script type="text/javascript" src="./../cmsimde/static/syntaxhighlighter/shBrushPython.js"></script>

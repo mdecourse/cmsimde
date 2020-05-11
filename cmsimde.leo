@@ -2159,6 +2159,8 @@ def ssavePage():
 <t tx="leo.20190515144238.25">def syntaxhighlight():
     return '''
 &lt;script type="text/javascript" src="/static/syntaxhighlighter/shCore.js"&gt;&lt;/script&gt;
+&lt;script type="text/javascript" src="/static/syntaxhighlighter/shBrushBash.js"&gt;&lt;/script&gt;
+&lt;script type="text/javascript" src="/static/syntaxhighlighter/shBrushDiff.js"&gt;&lt;/script&gt;
 &lt;script type="text/javascript" src="/static/syntaxhighlighter/shBrushJScript.js"&gt;&lt;/script&gt;
 &lt;script type="text/javascript" src="/static/syntaxhighlighter/shBrushJava.js"&gt;&lt;/script&gt;
 &lt;script type="text/javascript" src="/static/syntaxhighlighter/shBrushPython.js"&gt;&lt;/script&gt;
@@ -2218,6 +2220,8 @@ img.add_border {
 <t tx="leo.20190515144238.26">def syntaxhighlight2():
     return '''
 &lt;script type="text/javascript" src="./../cmsimde/static/syntaxhighlighter/shCore.js"&gt;&lt;/script&gt;
+&lt;script type="text/javascript" src="./../cmsimde/static/syntaxhighlighter/shBrushBash.js"&gt;&lt;/script&gt;
+&lt;script type="text/javascript" src="./../cmsimde/static/syntaxhighlighter/shBrushDiff.js"&gt;&lt;/script&gt;
 &lt;script type="text/javascript" src="./../cmsimde/static/syntaxhighlighter/shBrushJScript.js"&gt;&lt;/script&gt;
 &lt;script type="text/javascript" src="./../cmsimde/static/syntaxhighlighter/shBrushJava.js"&gt;&lt;/script&gt;
 &lt;script type="text/javascript" src="./../cmsimde/static/syntaxhighlighter/shBrushPython.js"&gt;&lt;/script&gt;
