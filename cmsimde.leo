@@ -1153,7 +1153,8 @@ def delete_file():
         return redirect("/login")
     head, level, page = parse_content()
     directory = render_menu(head, level, page)
-    filename = request.form['filename']
+    # for multiple files selection
+    filename = request.form.getlist('filename')
     if filename is None:
         outstring = "no file selected!"
         return set_css() + "&lt;div class='container'&gt;&lt;nav&gt;" + \
@@ -1442,7 +1443,8 @@ def doDelete():
     if not isAdmin():
         return redirect("/login")
     # delete files
-    filename = request.form['filename']
+    # allow multiple files selection
+    filename = request.form.getlist('filename')
     outstring = "all these files will be deleted:&lt;br /&gt;&lt;br /&gt;"
     # only select one file
     if isinstance(filename, str):
