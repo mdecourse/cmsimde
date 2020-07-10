@@ -2193,8 +2193,8 @@ def ssavePage():
             // MathJax loaded
             MathJax.Hub.Config({
                 tex2jax: {
-                    inlineMath: [ ['$','$'], ["\\\\(","\\\\)"] ],
-                    displayMath: [ ['$$','$$'], ["\\\\[","\\\\]"] ]
+                    inlineMath: [ ['$','$'] ],
+                    displayMath: [ ['$$','$$'] ]
                 },
                 displayAlign: 'left', // Change this to 'center' to center equations.
                 "HTML-CSS": {
