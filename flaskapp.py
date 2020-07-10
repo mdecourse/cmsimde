@@ -2314,6 +2314,13 @@ def syntaxhighlight():
 <script type="text/javascript">SyntaxHighlighter.all();</script>
 
 <!-- 啟用 LaTeX equations 編輯 -->
+  <script>
+  MathJax = {
+    tex: {inlineMath: [['$', '$'], ['\\(', '\\)']], displayMath: [ ['$$','$$'], ["\\\\[","\\\\]"]]}
+  };
+  </script>
+  <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js"></script>
+  <!-- old Mathjax
     <script src="https://scrum-3.github.io/web/math/MathJax.js?config=TeX-MML-AM_CHTML" type="text/javascript"></script>
     <script type="text/javascript">
     init_mathjax = function() {
@@ -2334,6 +2341,7 @@ def syntaxhighlight():
     }
     init_mathjax();
     </script>
+  關閉 old Mathjax -->
  <!-- 暫時不用
 <script src="/static/fengari-web.js"></script>
 <script type="text/javascript" src="/static/Cango-13v08-min.js"></script>
@@ -2374,6 +2382,13 @@ def syntaxhighlight2():
 <script type="text/javascript">SyntaxHighlighter.all();</script>
 
 <!-- 啟用 LaTeX equations 編輯 -->
+  <script>
+  MathJax = {
+    tex: {inlineMath: [['$', '$'], ['\\(', '\\)']], displayMath: [ ['$$','$$'], ["\\\\[","\\\\]"]]}
+  };
+  </script>
+  <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js"></script>
+<!-- old Mathjax
 <script src="https://scrum-3.github.io/web/math/MathJax.js?config=TeX-MML-AM_CHTML" type="text/javascript"></script>
 <script type="text/javascript">
 init_mathjax = function() {
@@ -2394,6 +2409,7 @@ init_mathjax = function() {
 }
 init_mathjax();
 </script>
+關閉 old Mathjax -->
 
 <!-- 暫時不用
 <script src="./../cmsimde/static/fengari-web.js"></script>
