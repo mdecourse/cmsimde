@@ -2179,35 +2179,24 @@ def ssavePage():
 &lt;script type="text/javascript"&gt;SyntaxHighlighter.all();&lt;/script&gt;
 
 &lt;!-- 啟用 LaTeX equations 編輯 --&gt;
-  &lt;script&gt;
-  MathJax = {
-    tex: {inlineMath: [['$', '$'], ['\\(', '\\)']], displayMath: [ ['$$','$$'], ["\\\\[","\\\\]"]]}
-  };
-  &lt;/script&gt;
-  &lt;script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js"&gt;&lt;/script&gt;
-  &lt;!-- old Mathjax
-    &lt;script src="https://scrum-3.github.io/web/math/MathJax.js?config=TeX-MML-AM_CHTML" type="text/javascript"&gt;&lt;/script&gt;
-    &lt;script type="text/javascript"&gt;
-    init_mathjax = function() {
-        if (window.MathJax) {
-            // MathJax loaded
-            MathJax.Hub.Config({
-                tex2jax: {
-                    inlineMath: [ ['$','$'] ],
-                    displayMath: [ ['$$','$$'] ]
-                },
-                displayAlign: 'left', // Change this to 'center' to center equations.
-                "HTML-CSS": {
-                    styles: {'.MathJax_Display': {"margin": 0}}
-                }
-            });
-            MathJax.Hub.Queue(["Typeset",MathJax.Hub]);
+&lt;script&gt;
+  (function () {
+  var body = document.body.textContent;
+  if (body.match(/(?:\$|\\\(|\\\[|\\begin\{.*?})/)) {
+    if (!window.MathJax) {
+      window.MathJax = {
+        tex: {
+          inlineMath: {'[+]': [['$', '$']]}
         }
+      };
     }
-    init_mathjax();
-    &lt;/script&gt;
-  關閉 old Mathjax --&gt;
- &lt;!-- 暫時不用
+    var script = document.createElement('script');
+    script.src = 'https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js';
+    document.head.appendChild(script);
+  }
+})();
+&lt;/script&gt;
+&lt;!-- 暫時不用
 &lt;script src="/static/fengari-web.js"&gt;&lt;/script&gt;
 &lt;script type="text/javascript" src="/static/Cango-13v08-min.js"&gt;&lt;/script&gt;
 &lt;script type="text/javascript" src="/static/CangoAxes-4v01-min.js"&gt;&lt;/script&gt;
@@ -2248,35 +2237,23 @@ img.add_border {
 &lt;script type="text/javascript"&gt;SyntaxHighlighter.all();&lt;/script&gt;
 
 &lt;!-- 啟用 LaTeX equations 編輯 --&gt;
-  &lt;script&gt;
-  MathJax = {
-    tex: {inlineMath: [['$', '$'], ['\\(', '\\)']], displayMath: [ ['$$','$$'], ["\\\\[","\\\\]"]]}
-  };
-  &lt;/script&gt;
-  &lt;script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js"&gt;&lt;/script&gt;
-&lt;!-- old Mathjax
-&lt;script src="https://scrum-3.github.io/web/math/MathJax.js?config=TeX-MML-AM_CHTML" type="text/javascript"&gt;&lt;/script&gt;
-&lt;script type="text/javascript"&gt;
-init_mathjax = function() {
-    if (window.MathJax) {
-        // MathJax loaded
-        MathJax.Hub.Config({
-            tex2jax: {
-                inlineMath: [ ['$','$'], ["\\\\(","\\\\)"] ],
-                displayMath: [ ['$$','$$'], ["\\\\[","\\\\]"] ]
-            },
-            displayAlign: 'left', // Change this to 'center' to center equations.
-            "HTML-CSS": {
-                styles: {'.MathJax_Display': {"margin": 0}}
-            }
-        });
-        MathJax.Hub.Queue(["Typeset",MathJax.Hub]);
+&lt;script&gt;
+  (function () {
+  var body = document.body.textContent;
+  if (body.match(/(?:\$|\\\(|\\\[|\\begin\{.*?})/)) {
+    if (!window.MathJax) {
+      window.MathJax = {
+        tex: {
+          inlineMath: {'[+]': [['$', '$']]}
+        }
+      };
     }
-}
-init_mathjax();
+    var script = document.createElement('script');
+    script.src = 'https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js';
+    document.head.appendChild(script);
+  }
+})();
 &lt;/script&gt;
-關閉 old Mathjax --&gt;
-
 &lt;!-- 暫時不用
 &lt;script src="./../cmsimde/static/fengari-web.js"&gt;&lt;/script&gt;
 &lt;script type="text/javascript" src="./../cmsimde/static/Cango-13v08-min.js"&gt;&lt;/script&gt;
