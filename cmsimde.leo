@@ -16,6 +16,7 @@
 <v t="leo.20190515144224.1"><vh>@clean flaskapp.py</vh>
 <v t="leo.20190515144237.1"><vh>Declarations (flaskapp.py)</vh></v>
 <v t="leo.20190515144237.2"><vh>checkLogin (flaskapp.py)</vh></v>
+<v t="yen.20200710111924.1"><vh>checkMath</vh></v>
 <v t="leo.20190515144237.3"><vh>delete_file (flaskapp.py)</vh></v>
 <v t="leo.20190515144237.4"><vh>doDelete (flaskapp.py)</vh></v>
 <v t="leo.20190515144237.5"><vh>doSearch (flaskapp.py)</vh></v>
@@ -782,7 +783,7 @@ def get_page(heading, edit):
     # edit=0 for viewpage
     if edit == 0:
         return set_css() + "&lt;div class='container'&gt;&lt;nav&gt;" + \
-                 directory + "&lt;/nav&gt;&lt;section&gt;" + return_content + "&lt;/section&gt;&lt;/div&gt;&lt;/body&gt;&lt;/html&gt;"
+                 directory + "&lt;/nav&gt;&lt;section&gt;" + return_content + "&lt;/section&gt;&lt;/div&gt;" + checkMath() + "&lt;/body&gt;&lt;/html&gt;"
     # enter edit mode
     else:
         # check if administrator
@@ -912,7 +913,7 @@ def get_page(heading, edit):
                     &lt;/script&gt;
             --&gt;
             &lt;script src="../cmsimde/static/chimper/js/main.js"&gt;&lt;/script&gt;
-        &lt;/body&gt;&lt;/html&gt;
+        ''' + checkMath() + '''&lt;/body&gt;&lt;/html&gt;
         '''
     # enter edit mode
     else:
@@ -2177,25 +2178,6 @@ def ssavePage():
 &lt;script type="text/javascript" src="/static/syntaxhighlighter/shBrushDart.js"&gt;&lt;/script&gt;
 &lt;link type="text/css" rel="stylesheet" href="/static/syntaxhighlighter/css/shCoreDefault.css"/&gt;
 &lt;script type="text/javascript"&gt;SyntaxHighlighter.all();&lt;/script&gt;
-
-&lt;!-- 啟用 LaTeX equations 編輯 --&gt;
-&lt;script&gt;
-  (function () {
-  var body = document.body.textContent;
-  if (body.match(/(?:\$|\\\(|\\\[|\\begin\{.*?})/)) {
-    if (!window.MathJax) {
-      window.MathJax = {
-        tex: {
-          inlineMath: {'[+]': [['$', '$']]}
-        }
-      };
-    }
-    var script = document.createElement('script');
-    script.src = 'https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js';
-    document.head.appendChild(script);
-  }
-})();
-&lt;/script&gt;
 &lt;!-- 暫時不用
 &lt;script src="/static/fengari-web.js"&gt;&lt;/script&gt;
 &lt;script type="text/javascript" src="/static/Cango-13v08-min.js"&gt;&lt;/script&gt;
@@ -2954,5 +2936,28 @@ spur(cx+pr1+pr2+pr2+pr3, cy, m, n3, pa, 180-180/n3+(180-180/n2)*n2/n3)
     # 若 template 檔案名稱與位於外部 templates 目錄中的檔案同名, 則取外部的 template
    # return render_template('g1index.html', user=user)
 </t>
+<t tx="yen.20200710111924.1">def checkMath():
+    outstring = '''
+&lt;!-- 啟用 LaTeX equations 編輯 --&gt;
+&lt;script&gt;
+  (function () {
+  var body = document.body.textContent;
+  if (body.match(/(?:\$|\\\(|\\\[|\\begin\{.*?})/)) {
+    if (!window.MathJax) {
+      window.MathJax = {
+        tex: {
+          inlineMath: {'[+]': [['$', '$']]}
+        }
+      };
+    }
+    var script = document.createElement('script');
+    script.src = 'https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js';
+    document.head.appendChild(script);
+  }
+})();
+&lt;/script&gt;
+    '''
+    return outstring
+    </t>
 </tnodes>
 </leo_file>

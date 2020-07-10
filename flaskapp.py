@@ -95,6 +95,29 @@ def checkLogin():
     return redirect('/')
 
  
+def checkMath():
+    outstring = '''
+<!-- 啟用 LaTeX equations 編輯 -->
+<script>
+  (function () {
+  var body = document.body.textContent;
+  if (body.match(/(?:\$|\\\(|\\\[|\\begin\{.*?})/)) {
+    if (!window.MathJax) {
+      window.MathJax = {
+        tex: {
+          inlineMath: {'[+]': [['$', '$']]}
+        }
+      };
+    }
+    var script = document.createElement('script');
+    script.src = 'https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js';
+    document.head.appendChild(script);
+  }
+})();
+</script>
+    '''
+    return outstring
+    
 @app.route('/delete_file', methods=['POST'])
 def delete_file():
     
@@ -857,7 +880,7 @@ def get_page(heading, edit):
     # edit=0 for viewpage
     if edit == 0:
         return set_css() + "<div class='container'><nav>" + \
-                 directory + "</nav><section>" + return_content + "</section></div></body></html>"
+                 directory + "</nav><section>" + return_content + "</section></div>" + checkMath() + "</body></html>"
     # enter edit mode
     else:
         # check if administrator
@@ -986,7 +1009,7 @@ def get_page2(heading, head, edit, get_page_content = None):
                     </script>
             -->
             <script src="../cmsimde/static/chimper/js/main.js"></script>
-        </body></html>
+        ''' + checkMath() + '''</body></html>
         '''
     # enter edit mode
     else:
@@ -2312,25 +2335,6 @@ def syntaxhighlight():
 <script type="text/javascript" src="/static/syntaxhighlighter/shBrushDart.js"></script>
 <link type="text/css" rel="stylesheet" href="/static/syntaxhighlighter/css/shCoreDefault.css"/>
 <script type="text/javascript">SyntaxHighlighter.all();</script>
-
-<!-- 啟用 LaTeX equations 編輯 -->
-<script>
-  (function () {
-  var body = document.body.textContent;
-  if (body.match(/(?:\$|\\\(|\\\[|\\begin\{.*?})/)) {
-    if (!window.MathJax) {
-      window.MathJax = {
-        tex: {
-          inlineMath: {'[+]': [['$', '$']]}
-        }
-      };
-    }
-    var script = document.createElement('script');
-    script.src = 'https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js';
-    document.head.appendChild(script);
-  }
-})();
-</script>
 <!-- 暫時不用
 <script src="/static/fengari-web.js"></script>
 <script type="text/javascript" src="/static/Cango-13v08-min.js"></script>
