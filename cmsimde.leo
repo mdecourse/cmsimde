@@ -2217,25 +2217,6 @@ img.add_border {
 &lt;script type="text/javascript" src="./../cmsimde/static/syntaxhighlighter/shBrushDart.js"&gt;&lt;/script&gt;
 &lt;link type="text/css" rel="stylesheet" href="./../cmsimde/static/syntaxhighlighter/css/shCoreDefault.css"/&gt;
 &lt;script type="text/javascript"&gt;SyntaxHighlighter.all();&lt;/script&gt;
-
-&lt;!-- 啟用 LaTeX equations 編輯 --&gt;
-&lt;script&gt;
-  (function () {
-  var body = document.body.textContent;
-  if (body.match(/(?:\$|\\\(|\\\[|\\begin\{.*?})/)) {
-    if (!window.MathJax) {
-      window.MathJax = {
-        tex: {
-          inlineMath: {'[+]': [['$', '$']]}
-        }
-      };
-    }
-    var script = document.createElement('script');
-    script.src = 'https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js';
-    document.head.appendChild(script);
-  }
-})();
-&lt;/script&gt;
 &lt;!-- 暫時不用
 &lt;script src="./../cmsimde/static/fengari-web.js"&gt;&lt;/script&gt;
 &lt;script type="text/javascript" src="./../cmsimde/static/Cango-13v08-min.js"&gt;&lt;/script&gt;
@@ -2945,23 +2926,6 @@ spur(cx+pr1+pr2+pr2+pr3, cy, m, n3, pa, 180-180/n3+(180-180/n2)*n2/n3)
   };
   &lt;/script&gt;
   &lt;script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js"&gt;&lt;/script&gt;--&gt;
-  &lt;script&gt;
-  (function () {
-  var body = document.body.textContent;
-  if (body.match(/(?:\$|\\\(|\\\[|\\begin\{.*?})/)) {
-    if (!window.MathJax) {
-      window.MathJax = {
-        tex: {
-          inlineMath: {'[+]': [['$', '$']]}
-        }
-      };
-    }
-    var script = document.createElement('script');
-    script.src = 'https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js';
-    document.head.appendChild(script);
-  }
-})();
-&lt;/script&gt;
     '''
     return outstring
     </t>
