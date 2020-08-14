@@ -2939,12 +2939,12 @@ spur(cx+pr1+pr2+pr2+pr3, cy, m, n3, pa, 180-180/n3+(180-180/n2)*n2/n3)
 <t tx="yen.20200710111924.1">def checkMath():
     outstring = '''
 &lt;!-- 啟用 LaTeX equations 編輯 --&gt;
-  &lt;script&gt;
+  &lt;!-- &lt;script&gt;
   MathJax = {
     tex: {inlineMath: [['$', '$'], ['\\(', '\\)']]}
   };
   &lt;/script&gt;
-  &lt;script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js"&gt;&lt;/script&gt;
+  &lt;script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js"&gt;&lt;/script&gt;--&gt;
     '''
     return outstring
     </t>
