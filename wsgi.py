@@ -21,7 +21,4 @@ if uwsgi:
     application = flaskapp.app
 else:
     # on localhost, on Linux or Mac need to use python3 wsgi.py to execute
-    try:
-        flaskapp.app.run(host=ip, port=port, debug=True, ssl_context=context)
-    except:
-        flaskapp.app.run(host='127.0.0.1', port=9443, debug=True, ssl_context=context)
+    flaskapp.app.run(host=ip, port=port, debug=True, ssl_context=context)
