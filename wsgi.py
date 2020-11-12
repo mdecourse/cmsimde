@@ -13,9 +13,15 @@ context.load_cert_chain('localhost.crt', 'localhost.key')
 
 # get uwsgi variable value of flaskapp.py
 uwsgi = flaskapp.uwsgi
+ip = flaskapp.ip
+port = flaskapp.port
+
 if uwsgi:
     # run on remote site
     application = flaskapp.app
 else:
     # on localhost, on Linux or Mac need to use python3 wsgi.py to execute
-    flaskapp.app.run(host='127.0.0.1', port=9443, debug=True, ssl_context=context)
+    try:
+        flaskapp.app.run(host=ip, port=port, debug=True, ssl_context=context)
+    except:
+        flaskapp.app.run(host='127.0.0.1', port=9443, debug=True, ssl_context=context)

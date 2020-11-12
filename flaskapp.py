@@ -59,6 +59,8 @@ image_dir = _curdir + "/images/"
 initobj = init.Init()
 # 取 init.py 中 Init 類別中的 class uwsgi 變數 (static variable) 設定
 uwsgi = init.Init.uwsgi
+ip = init.Init.ip
+port = init.Init.port
 
 # 必須先將 download_dir 設為 static_folder, 然後才可以用於 download 方法中的 app.static_folder 的呼叫
 app = Flask(__name__)
