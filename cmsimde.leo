@@ -2124,7 +2124,11 @@ def ssavePage():
     """seperate save page function"""
     page_content = request.form['page_content']
     # add an action for submit general save or collaborative csave
-    action = request.form['action']
+    # default value for action is "save", this is for editor menu Save button
+    try:
+        action = request.form['action']
+    except:
+        action = "save"
     # when element_format : "html", need to remove the annoying comment to prevent brython exec
     page_content = page_content.replace('// &lt;![CDATA[', '')
     page_content = page_content.replace('// ]]&gt;', '')
@@ -2147,10 +2151,10 @@ def ssavePage():
                 else:
                     # make orig and new html content into list
                     newSoup = bs4.BeautifulSoup(page_content, "html.parser")
-                    newList =[str(tag) for tag in newSoup.find_all(['h1', 'h2', 'h3', 'h4', 'iframe', 'p', 'pre', 'ol', 'ul', 'script', 'table'])]
+                    newList =[str(tag) for tag in newSoup.find_all(['h1', 'h2', 'h3', 'h4', 'p', 'pre', 'ol', 'ul', 'script', 'table'])]
                     oldPage = page[index]
                     oldSoup = bs4.BeautifulSoup(oldPage, "html.parser")
-                    oldList =[snTosr(tag) for tag in oldSoup.find_all(['h1', 'h2', 'h3', 'h4', 'iframe', 'p', 'pre', 'ol', 'ul', 'script', 'table'])]
+                    oldList =[snTosr(tag) for tag in oldSoup.find_all(['h1', 'h2', 'h3', 'h4', 'p', 'pre', 'ol', 'ul', 'script', 'table'])]
                     mergedList = merge_sequences(oldList, newList)
                     newContent = ""
                     for i in range(len(mergedList)):
@@ -3016,7 +3020,7 @@ def merge_sequences(list1, list2):
 def snTosr(tag):
     tagStr = str(tag)
     # 只要編輯區標註有跳行內容者, 都需要轉換跳行符號
-    if tag.name in ["pre", "iframe", "script"]:
+    if tag.name in ["pre", "script"]:
         return tagStr.replace("\n", "\r")
     else:
         return tagStr</t>
