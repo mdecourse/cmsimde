@@ -10,6 +10,7 @@
 <v t="leo.20190515144024.2"><vh>@data qt-gui-plugin-style-sheet</vh></v>
 <v t="leo.20190515144024.3"><vh>@string initial_split_orientation = horizontal</vh></v>
 </v>
+<v t="leo.20201127112020.1"><vh>About</vh></v>
 <v t="leo.20190515144242.1"><vh>@clean wsgi.py</vh>
 <v t="leo.20190515144254.1"><vh>Declarations (wsgi.py)</vh></v>
 </v>
@@ -79,6 +80,8 @@
 <v t="leo.20190515144238.26"><vh>syntaxhighlight2 (flaskapp.py)</vh></v>
 <v t="leo.20190515144238.27"><vh>tinymce_editor (flaskapp.py)</vh></v>
 <v t="leo.20190515144238.28"><vh>unique (flaskapp.py)</vh></v>
+<v t="leo.20201127112424.1"><vh>merge_sequence</vh></v>
+<v t="leo.20201127112439.1"><vh>snTosr</vh></v>
 </v>
 <v t="leo.20190603204847.1"><vh>@path up_dir</vh>
 <v t="leo.20190603204921.1"><vh>@clean init.py</vh>
@@ -226,6 +229,8 @@ import sys
 import bs4
 # for ssavePage and savePage
 import shutil
+# for merge_sequence
+from difflib import SequenceMatcher
 import inspect
 # 針對單一頁面有許多 html 標註時, 增大遞迴圈數設定
 sys.setrecursionlimit(1000000)
@@ -256,6 +261,8 @@ image_dir = _curdir + "/images/"
 initobj = init.Init()
 # 取 init.py 中 Init 類別中的 class uwsgi 變數 (static variable) 設定
 uwsgi = init.Init.uwsgi
+ip = init.Init.ip
+port = init.Init.port
 
 # 必須先將 download_dir 設為 static_folder, 然後才可以用於 download 方法中的 app.static_folder 的呼叫
 app = Flask(__name__)
@@ -356,7 +363,9 @@ def edit_page(edit):
     return '''
     &lt;br /&gt;
 &lt;!--&lt;script src="//cdn.tinymce.com/4/tinymce.min.js"&gt;&lt;/script&gt;--&gt;
-&lt;script src="/static/tinymce4/tinymce/tinymce.min.js"&gt;&lt;/script&gt;
+&lt;!--&lt;script src="/static/tinymce4/tinymce/tinymce.min.js"&gt;&lt;/script&gt;--&gt;
+&lt;!-- for ipv6 to work --&gt;
+&lt;script src="https://mde.tw/cmstemplate/cmsimde/static/tinymce4/tinymce/tinymce.min.js"&gt;&lt;/script&gt;
 &lt;script src="/static/tinymce4/tinymce/plugins/sh4tinymce/plugin.min.js"&gt;&lt;/script&gt;
 &lt;link rel = "stylesheet" href = "/static/tinymce4/tinymce/plugins/sh4tinymce/style/style.css"&gt;
 &lt;script&gt;
@@ -2114,6 +2123,8 @@ def sitemap(edit):
 def ssavePage():
     """seperate save page function"""
     page_content = request.form['page_content']
+    # add an action for submit general save or collaborative csave
+    action = request.form['action']
     # when element_format : "html", need to remove the annoying comment to prevent brython exec
     page_content = page_content.replace('// &lt;![CDATA[', '')
     page_content = page_content.replace('// ]]&gt;', '')
@@ -2131,7 +2142,20 @@ def ssavePage():
     with open(config_dir + "content.htm", "w", encoding="utf-8") as file:
         for index in range(len(head)):
             if index == int(page_order):
-                file.write(page_content)
+                if action == "save":
+                    file.write(page_content)
+                else:
+                    # make orig and new html content into list
+                    newSoup = bs4.BeautifulSoup(page_content, "html.parser")
+                    newList =[str(tag) for tag in newSoup.find_all(['h1', 'h2', 'h3', 'h4', 'iframe', 'p', 'pre', 'ol', 'ul', 'script', 'table'])]
+                    oldPage = page[index]
+                    oldSoup = bs4.BeautifulSoup(oldPage, "html.parser")
+                    oldList =[snTosr(tag) for tag in oldSoup.find_all(['h1', 'h2', 'h3', 'h4', 'iframe', 'p', 'pre', 'ol', 'ul', 'script', 'table'])]
+                    mergedList = merge_sequences(oldList, newList)
+                    newContent = ""
+                    for i in range(len(mergedList)):
+                        newContent += mergedList[i]
+                    file.write(newContent)
             else:
                 file.write("&lt;h"+str(level[index])+ "&gt;" + str(head[index]) + "&lt;/h" + \
                               str(level[index])+"&gt;"+str(page[index]))
@@ -2247,13 +2271,15 @@ img.add_border {
                         editor_content + "&lt;/textarea&gt;&lt;input type='submit' value='save'&gt; \
                         &lt;/form&gt;&lt;/section&gt;&lt;/body&gt;&lt;/html&gt;"
     else:
-        # add viewpage button wilie single page editing
+        # add viewpage button while single page editing
         head, level, page = parse_content()
         outstring = editor + "&lt;div class='container'&gt;&lt;nav&gt;" + \
                         menu_input+"&lt;/nav&gt;&lt;section&gt;&lt;form method='post' action='/ssavePage'&gt; \
                         &lt;textarea class='simply-editor' name='page_content' cols='50' rows='15'&gt;" + \
                         editor_content + "&lt;/textarea&gt;&lt;input type='hidden' name='page_order' value='" + \
-                        str(page_order) + "'&gt;&lt;input type='submit' value='save'&gt;"
+                        str(page_order) + "'&gt;&lt;input type='submit' name='action' value='save'&gt;"
+        # add an extra collaborative save button
+        outstring += "&lt;input type='submit' name='action' value='csave'&gt;"
         outstring += '''&lt;input type=button onClick="location.href='/get_page/''' + \
                     head[page_order] + \
                     ''''" value='viewpage'&gt;&lt;/form&gt;&lt;/section&gt;&lt;/body&gt;&lt;/html&gt;'''
@@ -2680,7 +2706,7 @@ if uwsgi:
     application = flaskapp.app
 else:
     # on localhost, on Linux or Mac need to use python3 wsgi.py to execute
-    flaskapp.app.run(host='127.0.0.1', port=9443, debug=True, ssl_context=context)
+    flaskapp.app.run(host=ip, port=port, debug=True, ssl_context=context)
 @language python
 @tabwidth -4
 </t>
@@ -2694,6 +2720,9 @@ context.load_cert_chain('localhost.crt', 'localhost.key')
 
 # get uwsgi variable value of flaskapp.py
 uwsgi = flaskapp.uwsgi
+ip = flaskapp.ip
+port = flaskapp.port
+
 </t>
 <t tx="leo.20190603204847.1"></t>
 <t tx="leo.20190603204921.1">@others
@@ -2714,6 +2743,8 @@ config_dir = _curdir + "/config/"
     # uwsgi as static class variable, can be accessed by Init.uwsgi
     uwsgi = False
     site_title = "CMSiMDE"
+    ip = "127.0.0.1"
+    port = 9443
     @others
 </t>
 <t tx="leo.20190603204931.3">def __init__(self):
@@ -2917,6 +2948,78 @@ spur(cx+pr1+pr2+pr2+pr3, cy, m, n3, pa, 180-180/n3+(180-180/n2)*n2/n3)
     # 若 template 檔案名稱與位於外部 templates 目錄中的檔案同名, 則取外部的 template
    # return render_template('g1index.html', user=user)
 </t>
+<t tx="leo.20201127112020.1">https://github.com/mdecourse/cmsimde.git
+
+2020.11.27 在網際編輯區新增一個 collabSave 按鈕, 可以在存檔時合併現有可能已經被改版的 content.htm 　對應頁面內容.
+
+edit all 將會無視編輯期間, 原有 content.htm 已被改版的內容, 在協同流程可能會丟失資料, 因此協同編輯時儘量不採 edit all 模式.
+
+目前的設計利用同名的 action button, 以其值為 save 或 csave 區分進行一般存檔或協同存檔.</t>
+<t tx="leo.20201127112424.1"># for merging two lists and preserve the duplicated elements
+'''
+def merge_sequences(seq1,seq2):
+    sm=SequenceMatcher(a=seq1,b=seq2)
+    res = []
+    for (op, start1, end1, start2, end2) in sm.get_opcodes():
+        if op == 'equal' or op=='delete':
+            #This range appears in both sequences, or only in the first one.
+            res += seq1[start1:end1]
+        elif op == 'insert':
+            #This range appears in only the second sequence.
+            res += seq2[start2:end2]
+        elif op == 'replace':
+            #There are different ranges in each sequence - add both.
+            res += seq1[start1:end1]
+            res += seq2[start2:end2]
+    return res
+
+'''
+def merge_sequences(list1, list2):
+    # Exit if list2 is empty
+    if not len(list2):
+        return list1
+    # Copy the content of list2 into merged list
+    merged = list2.copy()
+
+    # Create a list for storing temporary elements
+    elements = []
+    # Create a variable for storing previous element found in both lists
+    previous = None
+
+    # Loop through the elements of list1
+    for e in list1:
+        # Append the element to "elements" list if it's not in list2
+        if e not in merged:
+            elements.append(e)
+
+        # If it is in list2 (is a common element)
+        else:
+
+            # Loop through the stored elements
+            for x in elements:
+                # Insert all the stored elements after the previous common element
+                merged.insert(previous and merged.index(previous) + 1 or 0, x)
+            # Save new common element to previous
+            previous = e
+            # Empty temporary elements
+            del elements[:]
+
+    # If no more common elements were found but there are elements still stored
+    if len(elements):
+        # Insert them after the previous match
+        for e in elements:
+            merged.insert(previous and merged.index(previous) + 1 or 0, e)
+    # Return the merged list
+    return merged
+</t>
+<t tx="leo.20201127112439.1"># replace slash n twith slash r
+def snTosr(tag):
+    tagStr = str(tag)
+    # 只要編輯區標註有跳行內容者, 都需要轉換跳行符號
+    if tag.name in ["pre", "iframe", "script"]:
+        return tagStr.replace("\n", "\r")
+    else:
+        return tagStr</t>
 <t tx="yen.20200710111924.1">def checkMath():
     outstring = '''
 &lt;!-- 啟用 LaTeX equations 編輯 --&gt;
@@ -2928,6 +3031,7 @@ spur(cx+pr1+pr2+pr2+pr3, cy, m, n3, pa, 180-180/n3+(180-180/n2)*n2/n3)
   &lt;script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js"&gt;&lt;/script&gt;--&gt;
     '''
     return outstring
-    </t>
+    
+</t>
 </tnodes>
 </leo_file>

@@ -29,6 +29,8 @@ import sys
 import bs4
 # for ssavePage and savePage
 import shutil
+# for merge_sequence
+from difflib import SequenceMatcher
 import inspect
 # 針對單一頁面有許多 html 標註時, 增大遞迴圈數設定
 sys.setrecursionlimit(1000000)
@@ -2265,6 +2267,8 @@ def sizeof_fmt(num):
 def ssavePage():
     """seperate save page function"""
     page_content = request.form['page_content']
+    # add an action for submit general save or collaborative csave
+    action = request.form['action']
     # when element_format : "html", need to remove the annoying comment to prevent brython exec
     page_content = page_content.replace('// <![CDATA[', '')
     page_content = page_content.replace('// ]]>', '')
@@ -2282,7 +2286,20 @@ def ssavePage():
     with open(config_dir + "content.htm", "w", encoding="utf-8") as file:
         for index in range(len(head)):
             if index == int(page_order):
-                file.write(page_content)
+                if action == "save":
+                    file.write(page_content)
+                else:
+                    # make orig and new html content into list
+                    newSoup = bs4.BeautifulSoup(page_content, "html.parser")
+                    newList =[str(tag) for tag in newSoup.find_all(['h1', 'h2', 'h3', 'h4', 'iframe', 'p', 'pre', 'ol', 'ul', 'script', 'table'])]
+                    oldPage = page[index]
+                    oldSoup = bs4.BeautifulSoup(oldPage, "html.parser")
+                    oldList =[snTosr(tag) for tag in oldSoup.find_all(['h1', 'h2', 'h3', 'h4', 'iframe', 'p', 'pre', 'ol', 'ul', 'script', 'table'])]
+                    mergedList = merge_sequences(oldList, newList)
+                    newContent = ""
+                    for i in range(len(mergedList)):
+                        newContent += mergedList[i]
+                    file.write(newContent)
             else:
                 file.write("<h"+str(level[index])+ ">" + str(head[index]) + "</h" + \
                               str(level[index])+">"+str(page[index]))
@@ -2395,13 +2412,15 @@ def tinymce_editor(menu_input=None, editor_content=None, page_order=None):
                         editor_content + "</textarea><input type='submit' value='save'> \
                         </form></section></body></html>"
     else:
-        # add viewpage button wilie single page editing
+        # add viewpage button while single page editing
         head, level, page = parse_content()
         outstring = editor + "<div class='container'><nav>" + \
                         menu_input+"</nav><section><form method='post' action='/ssavePage'> \
                         <textarea class='simply-editor' name='page_content' cols='50' rows='15'>" + \
                         editor_content + "</textarea><input type='hidden' name='page_order' value='" + \
-                        str(page_order) + "'><input type='submit' value='save'>"
+                        str(page_order) + "'><input type='submit' name='action' value='save'>"
+        # add an extra collaborative save button
+        outstring += "<input type='submit' name='action' value='csave'>"
         outstring += '''<input type=button onClick="location.href='/get_page/''' + \
                     head[page_order] + \
                     ''''" value='viewpage'></form></section></body></html>'''
@@ -2424,5 +2443,69 @@ def unique(items):
     return keep
 
 
+# for merging two lists and preserve the duplicated elements
+'''
+def merge_sequences(seq1,seq2):
+    sm=SequenceMatcher(a=seq1,b=seq2)
+    res = []
+    for (op, start1, end1, start2, end2) in sm.get_opcodes():
+        if op == 'equal' or op=='delete':
+            #This range appears in both sequences, or only in the first one.
+            res += seq1[start1:end1]
+        elif op == 'insert':
+            #This range appears in only the second sequence.
+            res += seq2[start2:end2]
+        elif op == 'replace':
+            #There are different ranges in each sequence - add both.
+            res += seq1[start1:end1]
+            res += seq2[start2:end2]
+    return res
+
+'''
+def merge_sequences(list1, list2):
+    # Exit if list2 is empty
+    if not len(list2):
+        return list1
+    # Copy the content of list2 into merged list
+    merged = list2.copy()
+
+    # Create a list for storing temporary elements
+    elements = []
+    # Create a variable for storing previous element found in both lists
+    previous = None
+
+    # Loop through the elements of list1
+    for e in list1:
+        # Append the element to "elements" list if it's not in list2
+        if e not in merged:
+            elements.append(e)
+
+        # If it is in list2 (is a common element)
+        else:
+
+            # Loop through the stored elements
+            for x in elements:
+                # Insert all the stored elements after the previous common element
+                merged.insert(previous and merged.index(previous) + 1 or 0, x)
+            # Save new common element to previous
+            previous = e
+            # Empty temporary elements
+            del elements[:]
+
+    # If no more common elements were found but there are elements still stored
+    if len(elements):
+        # Insert them after the previous match
+        for e in elements:
+            merged.insert(previous and merged.index(previous) + 1 or 0, e)
+    # Return the merged list
+    return merged
+# replace slash n twith slash r
+def snTosr(tag):
+    tagStr = str(tag)
+    # 只要編輯區標註有跳行內容者, 都需要轉換跳行符號
+    if tag.name in ["pre", "iframe", "script"]:
+        return tagStr.replace("\n", "\r")
+    else:
+        return tagStr
 if __name__ == "__main__":
     app.run()
