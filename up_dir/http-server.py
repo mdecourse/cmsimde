@@ -12,7 +12,7 @@ def domake():
                                    server_side=True,
                                    certfile='./localhost.crt',
                                    keyfile='./localhost.key',
-                                   ssl_version=ssl.PROTOCOL_TLSv1)
+                                   ssl_version=ssl.PROTOCOL_TLSv1_2)
     print(os.getcwd())
     print("8444 https server started")
     httpd.serve_forever()
