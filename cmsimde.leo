@@ -365,7 +365,9 @@ def edit_page(edit):
 &lt;!--&lt;script src="//cdn.tinymce.com/4/tinymce.min.js"&gt;&lt;/script&gt;--&gt;
 &lt;!--&lt;script src="/static/tinymce4/tinymce/tinymce.min.js"&gt;&lt;/script&gt;--&gt;
 &lt;!-- for ipv6 to work --&gt;
-&lt;script src="https://mde.tw/cmstemplate/cmsimde/static/tinymce4/tinymce/tinymce.min.js"&gt;&lt;/script&gt;
+&lt;!-- &lt;script src="https://mde.tw/cmstemplate/cmsimde/static/tinymce4/tinymce/tinymce.min.js"&gt;&lt;/script&gt;--&gt;
+&lt;!-- may work for local, ipv4 and ipv6 editing --&gt;
+&lt;script src="/static/tinymce4/tinymce/tinymce.min.js"&gt;&lt;/script&gt;
 &lt;script src="/static/tinymce4/tinymce/plugins/sh4tinymce/plugin.min.js"&gt;&lt;/script&gt;
 &lt;link rel = "stylesheet" href = "/static/tinymce4/tinymce/plugins/sh4tinymce/style/style.css"&gt;
 &lt;script&gt;

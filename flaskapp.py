@@ -474,7 +474,9 @@ def editorhead():
 <!--<script src="//cdn.tinymce.com/4/tinymce.min.js"></script>-->
 <!--<script src="/static/tinymce4/tinymce/tinymce.min.js"></script>-->
 <!-- for ipv6 to work -->
-<script src="https://mde.tw/cmstemplate/cmsimde/static/tinymce4/tinymce/tinymce.min.js"></script>
+<!-- <script src="https://mde.tw/cmstemplate/cmsimde/static/tinymce4/tinymce/tinymce.min.js"></script>-->
+<!-- may work for local, ipv4 and ipv6 editing -->
+<script src="/static/tinymce4/tinymce/tinymce.min.js"></script>
 <script src="/static/tinymce4/tinymce/plugins/sh4tinymce/plugin.min.js"></script>
 <link rel = "stylesheet" href = "/static/tinymce4/tinymce/plugins/sh4tinymce/style/style.css">
 <script>
