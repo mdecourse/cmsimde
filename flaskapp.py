@@ -826,7 +826,7 @@ def generate_pages():
         title = soup.find("meta", property="head")
         print(title["content"])
         """
-        html_doc.replace('<meta charset="utf-8">', '<meta charset="utf-8">\n<meta property="head" content="H'+str(level[i])+'">')
+        html_doc = html_doc.replace('<meta charset="utf-8">', '<meta charset="utf-8">\n<meta property="head" content="H'+str(level[i])+'">')
         soup = bs4.BeautifulSoup(" ".join(get_page_content), "lxml")
         search_content.append({"title": newhead[i], "text": " ".join(filter(visible, soup.findAll(text=True))), "tags": "", "url": newhead[i] + ".html"})
         with open(_curdir + "/content/" + newhead[i] + ".html", "w", encoding="utf-8") as f:
