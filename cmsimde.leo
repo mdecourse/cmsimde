@@ -10,7 +10,9 @@
 <v t="leo.20190515144024.2"><vh>@data qt-gui-plugin-style-sheet</vh></v>
 <v t="leo.20190515144024.3"><vh>@string initial_split_orientation = horizontal</vh></v>
 </v>
-<v t="leo.20201127112020.1"><vh>About</vh></v>
+<v t="leo.20201127112020.1"><vh>About</vh>
+<v t="leo.20210320210418.1"><vh>assemble content.htm</vh></v>
+</v>
 <v t="leo.20190515144242.1"><vh>@clean wsgi.py</vh>
 <v t="leo.20190515144254.1"><vh>Declarations (wsgi.py)</vh></v>
 </v>
@@ -3039,6 +3041,24 @@ def snTosr(tag):
         return tagStr.replace("\n", "\r")
     else:
         return tagStr</t>
+<t tx="leo.20210320210418.1">@language python
+import os
+from bs4 import BeautifulSoup
+
+# 進入目錄,  讀取檔案主檔名與副檔名後取出 meta 中標註頁面 level 值
+for dname, dirs, files in os.walk("y:/tmp/cmstemplate/content"):
+    for fname in files:
+        fileMain, fileExt = os.path.splitext(fname)
+        if fileExt == ".html":
+            if fname not in ["index.html","sitemap.html"]:
+                vName = os.path.join(dname, fname)
+                with open(vName, "r", encoding="utf-8") as f:
+                    fContent = f.read()
+                    soup = BeautifulSoup(fContent)
+                    meta = soup.find("meta", property="head")
+                    head = meta["content"]
+                    print(head, fname)
+                    # 接下來必須逆向 generate_pages 流程, 以各頁內容組成 content.htm</t>
 <t tx="yen.20200710111924.1">def checkMath():
 
     """Use LaTeX Equation rendering
