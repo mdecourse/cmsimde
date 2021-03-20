@@ -732,8 +732,14 @@ def generate_pages():
         # 此一字串置換在 get_page2 中進行
         # 加入 tipue search 模式
         get_page_content = []
-        # 加入 H1, H2 或 H3 註解資料
-        html_doc = "&lt;!-- H" + str(level[i]) + "--&gt;&lt;br /&gt;" + get_page2(newhead[i], newhead, 0, get_page_content)
+        html_doc = get_page2(newhead[i], newhead, 0, get_page_content)
+        """
+        # html = "&lt;meta property='head' content='H1'&gt;"
+        soup = BeautifulSoup(html)
+        title = soup.find("meta", property="head")
+        print(title["content"])
+        """
+        html_doc.replace('&lt;meta charset="utf-8"&gt;', '&lt;meta charset="utf-8"&gt;\n&lt;meta property="head" content="H'+str(level[i])+'"&gt;')
         soup = bs4.BeautifulSoup(" ".join(get_page_content), "lxml")
         search_content.append({"title": newhead[i], "text": " ".join(filter(visible, soup.findAll(text=True))), "tags": "", "url": newhead[i] + ".html"})
         with open(_curdir + "/content/" + newhead[i] + ".html", "w", encoding="utf-8") as f:
