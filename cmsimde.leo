@@ -205,7 +205,7 @@ if __name__ == "__main__":
 
 from flask import Flask, send_from_directory, request, redirect, \
     render_template, session, make_response, url_for, flash
-# python -m pip install flask_cors
+# to install flask_cors use "python -m pip install flask_cors"
 from flask_cors import CORS
 import random
 import math
@@ -276,7 +276,8 @@ app.config['download_dir'] = download_dir
 # 使用 session 必須要設定 secret_key
 # In order to use sessions you have to set a secret key
 # set the secret key.  keep this really secret:
-app.secret_key = 'A0Zr9@8j/3yX R~XHH!jmN]LWX/,?R@T'
+secret_key = os.urandom(24).hex()
+app.secret_key = secret_key
 
 try:
     # register userapp blueprint app in user.py
@@ -731,7 +732,8 @@ def generate_pages():
         # 此一字串置換在 get_page2 中進行
         # 加入 tipue search 模式
         get_page_content = []
-        html_doc = get_page2(newhead[i], newhead, 0, get_page_content)
+        # 加入 H1, H2 或 H3 註解資料
+        html_doc = "&lt;!-- H" + str(level[i]) + "--&gt;&lt;br /&gt;" + get_page2(newhead[i], newhead, 0, get_page_content)
         soup = bs4.BeautifulSoup(" ".join(get_page_content), "lxml")
         search_content.append({"title": newhead[i], "text": " ".join(filter(visible, soup.findAll(text=True))), "tags": "", "url": newhead[i] + ".html"})
         with open(_curdir + "/content/" + newhead[i] + ".html", "w", encoding="utf-8") as f:
@@ -1157,10 +1159,10 @@ def imageaxupload():
 </t>
 <t tx="leo.20190515144237.3">@app.route('/delete_file', methods=['POST'])
 def delete_file():
-    
+
     """Delete user uploaded files
     """
-    
+
     if not isAdmin():
         return redirect("/login")
     head, level, page = parse_content()
@@ -2720,11 +2722,11 @@ else:
 import flaskapp
 import ssl
 
-# even on localhost still use https to access
+# even on localhost still design to use https to access
 context = ssl.SSLContext(ssl.PROTOCOL_TLSv1_2)
 context.load_cert_chain('localhost.crt', 'localhost.key')
 
-# get uwsgi variable value of flaskapp.py
+# get uwsgi, ip and port variable values of flaskapp.py
 uwsgi = flaskapp.uwsgi
 ip = flaskapp.ip
 port = flaskapp.port
@@ -2960,7 +2962,12 @@ spur(cx+pr1+pr2+pr2+pr3, cy, m, n3, pa, 180-180/n3+(180-180/n2)*n2/n3)
 
 edit all 將會無視編輯期間, 原有 content.htm 已被改版的內容, 在協同流程可能會丟失資料, 因此協同編輯時儘量不採 edit all 模式.
 
-目前的設計利用同名的 action button, 以其值為 save 或 csave 區分進行一般存檔或協同存檔.</t>
+目前的設計利用同名的 action button, 以其值為 save 或 csave 區分進行一般存檔或協同存檔.
+
+2021.03.20 準備新增一個功能, 可以從 content 目錄中的 .html 檔案組合出對應的 config/content.htm, 意即可以雙向轉換動態與靜態網站的內容.
+
+從動態轉為靜態時必須將 H1, H2 或 H3 以 &lt;!-- --&gt; 寫在標題行下, 以便讓靜態網頁可以再轉回動態網頁.
+</t>
 <t tx="leo.20201127112424.1"># for merging two lists and preserve the duplicated elements
 '''
 def merge_sequences(seq1,seq2):
@@ -3027,6 +3034,9 @@ def snTosr(tag):
     else:
         return tagStr</t>
 <t tx="yen.20200710111924.1">def checkMath():
+
+    """Use LaTeX Equation rendering
+    """
     outstring = '''
 &lt;!-- 啟用 LaTeX equations 編輯 --&gt;
   &lt;!-- &lt;script&gt;

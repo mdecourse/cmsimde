@@ -7,11 +7,11 @@
 import flaskapp
 import ssl
 
-# even on localhost still use https to access
+# even on localhost still design to use https to access
 context = ssl.SSLContext(ssl.PROTOCOL_TLSv1_2)
 context.load_cert_chain('localhost.crt', 'localhost.key')
 
-# get uwsgi variable value of flaskapp.py
+# get uwsgi, ip and port variable values of flaskapp.py
 uwsgi = flaskapp.uwsgi
 ip = flaskapp.ip
 port = flaskapp.port

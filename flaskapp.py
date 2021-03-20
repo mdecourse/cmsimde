@@ -5,7 +5,7 @@
 
 from flask import Flask, send_from_directory, request, redirect, \
     render_template, session, make_response, url_for, flash
-# python -m pip install flask_cors
+# to install flask_cors use "python -m pip install flask_cors"
 from flask_cors import CORS
 import random
 import math
@@ -76,7 +76,8 @@ app.config['download_dir'] = download_dir
 # 使用 session 必須要設定 secret_key
 # In order to use sessions you have to set a secret key
 # set the secret key.  keep this really secret:
-app.secret_key = 'A0Zr9@8j/3yX R~XHH!jmN]LWX/,?R@T'
+secret_key = os.urandom(24).hex()
+app.secret_key = secret_key
 
 try:
     # register userapp blueprint app in user.py
@@ -100,6 +101,9 @@ def checkLogin():
 
  
 def checkMath():
+
+    """Use LaTeX Equation rendering
+    """
     outstring = '''
 <!-- 啟用 LaTeX equations 編輯 -->
   <!-- <script>
@@ -113,10 +117,10 @@ def checkMath():
     
 @app.route('/delete_file', methods=['POST'])
 def delete_file():
-    
+
     """Delete user uploaded files
     """
-    
+
     if not isAdmin():
         return redirect("/login")
     head, level, page = parse_content()
@@ -815,7 +819,8 @@ def generate_pages():
         # 此一字串置換在 get_page2 中進行
         # 加入 tipue search 模式
         get_page_content = []
-        html_doc = get_page2(newhead[i], newhead, 0, get_page_content)
+        # 加入 H1, H2 或 H3 註解資料
+        html_doc = "<!-- H" + str(level[i]) + "--><br />" + get_page2(newhead[i], newhead, 0, get_page_content)
         soup = bs4.BeautifulSoup(" ".join(get_page_content), "lxml")
         search_content.append({"title": newhead[i], "text": " ".join(filter(visible, soup.findAll(text=True))), "tags": "", "url": newhead[i] + ".html"})
         with open(_curdir + "/content/" + newhead[i] + ".html", "w", encoding="utf-8") as f:
