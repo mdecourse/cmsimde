@@ -11,6 +11,7 @@
 <v t="leo.20190515144024.3"><vh>@string initial_split_orientation = horizontal</vh></v>
 </v>
 <v t="leo.20201127112020.1"><vh>About</vh>
+<v t="leo.20210320213557.1"><vh>cmsimde</vh></v>
 <v t="leo.20210320210418.1"><vh>assemble content.htm</vh></v>
 </v>
 <v t="leo.20190515144242.1"><vh>@clean wsgi.py</vh>
@@ -697,7 +698,7 @@ def generate_pages():
     # 根據 content.htm 內容, 逐一產生各頁面檔案
     # 在此也要同時配合 render_menu2, 產生對應的 anchor 連結
     head, level, page = parse_content()
-    # 處理重複標題 head 數列， 再重複標題按照次序加上 1, 2, 3...
+    # 處理重複標題 head 數列， 重複標題則按照次序加上 1, 2, 3...
     newhead = []
     for i, v in enumerate(head):
         # 各重複標題總數
@@ -3042,10 +3043,17 @@ def snTosr(tag):
     else:
         return tagStr</t>
 <t tx="leo.20210320210418.1">@language python
+"""
+希望組合 content.htm 前必須確定 content 目錄中各檔案符合下列需求
+html 架構符合 generate_pages 後的內容, 包含 images, downloads 連結
+各頁面帶有 level meta 資料
+"""
 import os
 from bs4 import BeautifulSoup
 
 # 進入目錄,  讀取檔案主檔名與副檔名後取出 meta 中標註頁面 level 值
+# 必須配合新版 generate_pages 中已經置入 level meta 資料進行後續處理
+# html_doc = html_doc.replace('&lt;meta charset="utf-8"&gt;', '&lt;meta charset="utf-8"&gt;\n&lt;meta property="head" content="H'+str(level[i])+'"&gt;')
 for dname, dirs, files in os.walk("y:/tmp/cmstemplate/content"):
     for fname in files:
         fileMain, fileExt = os.path.splitext(fname)
@@ -3054,11 +3062,19 @@ for dname, dirs, files in os.walk("y:/tmp/cmstemplate/content"):
                 vName = os.path.join(dname, fname)
                 with open(vName, "r", encoding="utf-8") as f:
                     fContent = f.read()
-                    soup = BeautifulSoup(fContent)
+                    soup = BeautifulSoup(fContent, "lxml")
                     meta = soup.find("meta", property="head")
                     head = meta["content"]
                     print(head, fname)
                     # 接下來必須逆向 generate_pages 流程, 以各頁內容組成 content.htm</t>
+<t tx="leo.20210320213557.1">get_page() 用於取頁面資料顯示
+
+    edit=1 表示要進入編輯模式
+    heading 為所要取頁面的標題
+
+get_page2() 則與 get_page() 取頁面內容功能相同, 但用於將動態內容替換為準備 generate_pages 用, 其中有以下替換:
+
+</t>
 <t tx="yen.20200710111924.1">def checkMath():
 
     """Use LaTeX Equation rendering

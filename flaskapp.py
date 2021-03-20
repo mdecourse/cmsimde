@@ -782,7 +782,7 @@ def generate_pages():
     # 根據 content.htm 內容, 逐一產生各頁面檔案
     # 在此也要同時配合 render_menu2, 產生對應的 anchor 連結
     head, level, page = parse_content()
-    # 處理重複標題 head 數列， 再重複標題按照次序加上 1, 2, 3...
+    # 處理重複標題 head 數列， 重複標題則按照次序加上 1, 2, 3...
     newhead = []
     for i, v in enumerate(head):
         # 各重複標題總數
