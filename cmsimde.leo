@@ -848,8 +848,8 @@ def get_page(heading, edit):
     page = [w.replace('src="/downloads', 'src="./../downloads') for w in page]
     # 假如有 pythonpath:['/static/'] 則換為 ./../cmsimde/static/
     page = [w.replace("pythonpath:['/static/']", "pythonpath:['./../cmsimde/static/']") for w in page]
-    # 假如有 /get_page 則換為 空字元, 表示要在靜態網頁直接取網頁
-    page = [w.replace('/get_page', '') for w in page]
+    # 假如有 /get_page 則需額外使用 regex 進行字串代換, 表示要在靜態網頁直接取網頁 (尚未完成)
+    #page = [w.replace('/get_page', '') for w in page]
 
     directory = render_menu2(head, level, page)
     if heading is None:
@@ -3096,8 +3096,7 @@ get_page2() 則與 get_page() 取頁面內容功能相同, 但用於將動態內
     
 get_page2 中的字串代換, 增加在動態與靜態網頁, 可自行擷取網站內容頁面連結
 
-# 假如有 /get_page 則換為 空字元, 表示要在靜態網頁直接取網頁
-page = [w.replace('/get_page', '') for w in page]</t>
+尚未完成</t>
 <t tx="yen.20200710111924.1">def checkMath():
 
     """Use LaTeX Equation rendering
