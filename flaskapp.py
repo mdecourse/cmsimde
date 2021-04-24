@@ -801,6 +801,7 @@ def generate_pages():
         f.write(get_page2(None, newhead, 0))
     # sitemap
     with open(_curdir + "/content/sitemap.html", "w", encoding="utf-8") as f:
+        # 為了修改為動態與靜態網頁雙向轉檔, 這裡需要 newhead pickle
         # sitemap2 需要 newhead
         f.write(sitemap2(newhead))
     # 以下轉檔, 改用 newhead 數列
@@ -926,8 +927,10 @@ def get_page2(heading, head, edit, get_page_content = None):
     page = [w.replace('src="/static/', 'src="./../cmsimde/static/') for w in page]
     # 假如有 src=/downloads 則換為 src=./../../downloads
     page = [w.replace('src="/downloads', 'src="./../downloads') for w in page]
-    # 假如有 pythonpath:['/static/'] 則換為 
+    # 假如有 pythonpath:['/static/'] 則換為 ./../cmsimde/static/
     page = [w.replace("pythonpath:['/static/']", "pythonpath:['./../cmsimde/static/']") for w in page]
+    # 假如有 /get_page 則換為 空字元, 表示要在靜態網頁直接取網頁
+    page = [w.replace('/get_page', 'src="') for w in page]
 
     directory = render_menu2(head, level, page)
     if heading is None:
@@ -965,7 +968,7 @@ def get_page2(heading, head, edit, get_page_content = None):
             return_content += last_page + " " + next_page + "<br /><h1>" + \
                                       heading + "</h1>" + page_content_list[i] + \
                                       "<br />" + last_page + " " + next_page
-            
+
         pagedata += "<h" + level[page_order] + ">" + heading + \
                           "</h" + level[page_order] + ">" + page_content_list[i]
         # 利用 html_escape() 將 specialchar 轉成只能顯示的格式

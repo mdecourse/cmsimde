@@ -13,6 +13,7 @@
 <v t="leo.20201127112020.1"><vh>About</vh>
 <v t="leo.20210320213557.1"><vh>cmsimde</vh></v>
 <v t="leo.20210320210418.1"><vh>assemble content.htm</vh></v>
+<v t="leo.20210424092822.1"><vh>202104 修改</vh></v>
 </v>
 <v t="leo.20190515144242.1"><vh>@clean wsgi.py</vh>
 <v t="leo.20190515144254.1"><vh>Declarations (wsgi.py)</vh></v>
@@ -717,6 +718,7 @@ def generate_pages():
         f.write(get_page2(None, newhead, 0))
     # sitemap
     with open(_curdir + "/content/sitemap.html", "w", encoding="utf-8") as f:
+        # 為了修改為動態與靜態網頁雙向轉檔, 這裡需要 newhead pickle
         # sitemap2 需要 newhead
         f.write(sitemap2(newhead))
     # 以下轉檔, 改用 newhead 數列
@@ -844,8 +846,10 @@ def get_page(heading, edit):
     page = [w.replace('src="/static/', 'src="./../cmsimde/static/') for w in page]
     # 假如有 src=/downloads 則換為 src=./../../downloads
     page = [w.replace('src="/downloads', 'src="./../downloads') for w in page]
-    # 假如有 pythonpath:['/static/'] 則換為 
+    # 假如有 pythonpath:['/static/'] 則換為 ./../cmsimde/static/
     page = [w.replace("pythonpath:['/static/']", "pythonpath:['./../cmsimde/static/']") for w in page]
+    # 假如有 /get_page 則換為 空字元, 表示要在靜態網頁直接取網頁
+    page = [w.replace('/get_page', 'src="') for w in page]
 
     directory = render_menu2(head, level, page)
     if heading is None:
@@ -883,7 +887,7 @@ def get_page(heading, edit):
             return_content += last_page + " " + next_page + "&lt;br /&gt;&lt;h1&gt;" + \
                                       heading + "&lt;/h1&gt;" + page_content_list[i] + \
                                       "&lt;br /&gt;" + last_page + " " + next_page
-            
+
         pagedata += "&lt;h" + level[page_order] + "&gt;" + heading + \
                           "&lt;/h" + level[page_order] + "&gt;" + page_content_list[i]
         # 利用 html_escape() 將 specialchar 轉成只能顯示的格式
@@ -3067,14 +3071,33 @@ for dname, dirs, files in os.walk("y:/tmp/cmstemplate/content"):
                     head = meta["content"]
                     print(head, fname)
                     # 接下來必須逆向 generate_pages 流程, 以各頁內容組成 content.htm</t>
-<t tx="leo.20210320213557.1">get_page() 用於取頁面資料顯示
+<t tx="leo.20210320213557.1">@language python
+
+get_page() 用於取頁面資料顯示
 
     edit=1 表示要進入編輯模式
     heading 為所要取頁面的標題
 
 get_page2() 則與 get_page() 取頁面內容功能相同, 但用於將動態內容替換為準備 generate_pages 用, 其中有以下替換:
 
+    # 直接在此將 /images/ 換為 ./../images/, /downloads/ 換為 ./../downloads/, 以 content 為基準的相對目錄設定
+    page = [w.replace('src="/images/', 'src="./../images/') for w in page]
+    page = [w.replace('href="/downloads/', 'href="./../downloads/') for w in page]
+    # 假如有 src="/static/ace/ 則換為 src="./../static/ace/
+    page = [w.replace('src="/static/', 'src="./../cmsimde/static/') for w in page]
+    # 假如有 src=/downloads 則換為 src=./../../downloads
+    page = [w.replace('src="/downloads', 'src="./../downloads') for w in page]
+    # 假如有 pythonpath:['/static/'] 則換為 
+    page = [w.replace("pythonpath:['/static/']", "pythonpath:['./../cmsimde/static/']") for w in page]
+
+若從靜態 content/ 中的 .html 轉回 config/content.htm, 則必須進行反向轉換.
 </t>
+<t tx="leo.20210424092822.1">@language python
+    
+get_page2 中的字串代換, 增加在動態與靜態網頁, 可自行擷取網站內容頁面連結
+
+# 假如有 /get_page 則換為 空字元, 表示要在靜態網頁直接取網頁
+page = [w.replace('/get_page', 'src="') for w in page]</t>
 <t tx="yen.20200710111924.1">def checkMath():
 
     """Use LaTeX Equation rendering
