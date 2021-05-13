@@ -2731,7 +2731,10 @@ else:
 @language python
 @tabwidth -4
 </t>
-<t tx="leo.20190515144254.1"># import flaskapp at the same directory
+<t tx="leo.20190515144254.1">import sys
+import os
+sys.path.append(os.path.join(os.path.dirname(__file__)))
+# import flaskapp at the same directory
 import flaskapp
 import ssl
 

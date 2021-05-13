@@ -3,6 +3,9 @@
 """Flask startup script
 """
 
+import sys
+import os
+sys.path.append(os.path.join(os.path.dirname(__file__)))
 # import flaskapp at the same directory
 import flaskapp
 import ssl
