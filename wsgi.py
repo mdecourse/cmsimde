@@ -4,7 +4,7 @@
 """
 
 # import flaskapp at the same directory
-import flaskapp
+from . import flaskapp
 import ssl
 
 # even on localhost still design to use https to access

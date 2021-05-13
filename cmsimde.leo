@@ -2732,7 +2732,7 @@ else:
 @tabwidth -4
 </t>
 <t tx="leo.20190515144254.1"># import flaskapp at the same directory
-import flaskapp
+from . import flaskapp
 import ssl
 
 # even on localhost still design to use https to access
