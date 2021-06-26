@@ -2727,7 +2727,7 @@ if uwsgi:
     application = flaskapp.app
 else:
     # on localhost, on Linux or Mac need to use python3 wsgi.py to execute
-    flaskapp.app.run(host=ip, port=port, debug=True, ssl_context=context)
+    flaskapp.app.run(host=ip, port=port, debug=True, ssl_context="adhoc")
 @language python
 @tabwidth -4
 </t>
@@ -2736,11 +2736,6 @@ import os
 sys.path.append(os.path.join(os.path.dirname(__file__)))
 # import flaskapp at the same directory
 import flaskapp
-import ssl
-
-# even on localhost still design to use https to access
-context = ssl.SSLContext(ssl.PROTOCOL_TLSv1_2)
-context.load_cert_chain('localhost.crt', 'localhost.key')
 
 # get uwsgi, ip and port variable values of flaskapp.py
 uwsgi = flaskapp.uwsgi
