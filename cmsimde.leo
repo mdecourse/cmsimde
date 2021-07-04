@@ -35,6 +35,7 @@
 <v t="leo.20190515144237.13"><vh>editorfoot (flaskapp.py)</vh></v>
 <v t="leo.20190515144237.14"><vh>editorhead (flaskapp.py)</vh></v>
 <v t="leo.20190515144237.15"><vh>error_log (flaskapp.py)</vh></v>
+<v t="yen.20210704112438.1"><vh>favicon.ico</vh></v>
 <v t="leo.20190515144237.16"><vh>file_get_contents (flaskapp.py)</vh></v>
 <v t="leo.20190515144237.17"><vh>file_lister (flaskapp.py)</vh></v>
 <v t="leo.20190515144237.18"><vh>file_selector (flaskapp.py)</vh></v>
@@ -3111,5 +3112,9 @@ get_page2 中的字串代換, 增加在動態與靜態網頁, 可自行擷取網
     return outstring
     
 </t>
+<t tx="yen.20210704112438.1">@app.route('/favicon.ico')
+def favicon():
+    return send_from_directory(os.path.join(app.root_path, 'static'),
+                               'favicon.ico', mimetype='image/vnd.microsoft.icon')</t>
 </tnodes>
 </leo_file>
