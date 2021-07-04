@@ -3114,7 +3114,6 @@ get_page2 中的字串代換, 增加在動態與靜態網頁, 可自行擷取網
 </t>
 <t tx="yen.20210704112438.1">@app.route('/favicon.ico')
 def favicon():
-    return send_from_directory(os.path.join(app.root_path, 'static'),
-                               'favicon.ico', mimetype='image/vnd.microsoft.icon')</t>
+    return send_from_directory(_curdir, 'favicon.ico', mimetype='image/vnd.microsoft.icon')</t>
 </tnodes>
 </leo_file>

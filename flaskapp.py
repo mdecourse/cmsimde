@@ -540,8 +540,7 @@ def error_log(self, info="Error"):
 
 @app.route('/favicon.ico')
 def favicon():
-    return send_from_directory(os.path.join(app.root_path, 'static'),
-                               'favicon.ico', mimetype='image/vnd.microsoft.icon')
+    return send_from_directory(_curdir, 'favicon.ico', mimetype='image/vnd.microsoft.icon')
 def file_get_contents(filename):
     # open file in utf-8 and return file content
     with open(filename, encoding="utf-8") as file:
