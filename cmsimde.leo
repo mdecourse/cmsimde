@@ -14,6 +14,7 @@
 <v t="leo.20210320213557.1"><vh>cmsimde</vh></v>
 <v t="leo.20210320210418.1"><vh>assemble content.htm</vh></v>
 <v t="leo.20210424092822.1"><vh>202104 修改</vh></v>
+<v t="yen.20210707134934.1"><vh>202107 修改</vh></v>
 </v>
 <v t="leo.20190515144242.1"><vh>@clean wsgi.py</vh>
 <v t="leo.20190515144254.1"><vh>Declarations (wsgi.py)</vh></v>
@@ -848,7 +849,7 @@ def get_page(heading, edit):
     # 假如有 src=/downloads 則換為 src=./../../downloads
     page = [w.replace('src="/downloads', 'src="./../downloads') for w in page]
     # 假如有 pythonpath:['/static/'] 則換為 ./../cmsimde/static/
-    page = [w.replace("pythonpath:['/static/']", "pythonpath:['./../cmsimde/static/']") for w in page]
+    page = [w.replace("pythonpath:['/static/'", "pythonpath:['./../cmsimde/static/'") for w in page]
     # 假如有 /get_page 則需額外使用 regex 進行字串代換, 表示要在靜態網頁直接取網頁 (尚未完成)
     #page = [w.replace('/get_page', '') for w in page]
 
@@ -3086,8 +3087,8 @@ get_page2() 則與 get_page() 取頁面內容功能相同, 但用於將動態內
     page = [w.replace('src="/static/', 'src="./../cmsimde/static/') for w in page]
     # 假如有 src=/downloads 則換為 src=./../../downloads
     page = [w.replace('src="/downloads', 'src="./../downloads') for w in page]
-    # 假如有 pythonpath:['/static/'] 則換為 
-    page = [w.replace("pythonpath:['/static/']", "pythonpath:['./../cmsimde/static/']") for w in page]
+    # 假如有 pythonpath:['/static/'] 則換為, 因為要導入位於 downloads 中的其他 .py, 因此去掉最後的中括號
+    page = [w.replace("pythonpath:['/static/'", "pythonpath:['./../cmsimde/static/'") for w in page]
 
 若從靜態 content/ 中的 .html 轉回 config/content.htm, 則必須進行反向轉換.
 </t>
@@ -3115,5 +3116,8 @@ get_page2 中的字串代換, 增加在動態與靜態網頁, 可自行擷取網
 <t tx="yen.20210704112438.1">@app.route('/favicon.ico')
 def favicon():
     return send_from_directory(_curdir, 'favicon.ico', mimetype='image/vnd.microsoft.icon')</t>
+<t tx="yen.20210707134934.1">因為需要在 download 中導入其他 brython .py 模組, 因此刪除 ]
+
+page = [w.replace("pythonpath:['/static/'", "pythonpath:['./../cmsimde/static/'") for w in page]</t>
 </tnodes>
 </leo_file>
