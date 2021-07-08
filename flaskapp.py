@@ -108,7 +108,7 @@ def checkLogin():
         # try to set cookie too
         response = make_response(redirect('/edit_page'))
         session_value =  os.urandom(24).hex()
-        response.set_cookie('admin_'+token, session_value)
+        response.set_cookie('session', session_value)
         return response
         #return redirect('/edit_page')
     return redirect('/')

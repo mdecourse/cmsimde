@@ -624,7 +624,7 @@ def checkLogin():
         # try to set cookie too
         response = make_response(redirect('/edit_page'))
         session_value =  os.urandom(24).hex()
-        response.set_cookie('admin_'+token, session_value)
+        response.set_cookie('session', session_value)
         return response
         #return redirect('/edit_page')
     return redirect('/')
@@ -3015,7 +3015,7 @@ def password_generator(size=4, chars=string.ascii_lowercase + string.digits):
 
 password_generator() 函式需要 random 與 string 模組.
 
-在 checkLogin() 中也加入 set_cookie</t>
+在 checkLogin() 中也加入 set_cookie, 目前使用 session + session_value 設定</t>
 <t tx="yen.20210708085937.1">def password_generator(size=4, chars=string.ascii_lowercase + string.digits):
     return ''.join(random.choice(chars) for _ in range(size))
 
