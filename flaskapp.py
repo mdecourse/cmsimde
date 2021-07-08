@@ -79,8 +79,10 @@ app.config['download_dir'] = download_dir
 # 使用 session 必須要設定 secret_key
 # In order to use sessions you have to set a secret key
 # set the secret key.  keep this really secret:
-secret_key = os.urandom(24).hex()
-app.secret_key = secret_key
+#secret_key = os.urandom(24).hex()
+#app.secret_key = secret_key
+# check if fixed secret_key can allow multiple cmsimde on same session
+app.secret_key = "eyJhZG1pbl8yczIwIjoxfQ.YOZamA.ft1Mus8eZ6m0QPXOBNLv0UBn6VQ"
 
 try:
     # register userapp blueprint app in user.py
@@ -105,12 +107,8 @@ def checkLogin():
     if hashed_password == saved_password:
         # 為了讓多 cmsimde 可以在同一個瀏覽器共存, 因此讓每一個 session 不同
         session['admin_'+token] = 1
-        # try to set cookie too
-        response = make_response(redirect('/edit_page'))
-        session_value =  os.urandom(24).hex()
-        response.set_cookie('session', session_value)
-        return response
-        #return redirect('/edit_page')
+        # 看起來送至 client 端的不是 admin_token, 而是編碼過的 secret_key
+        return redirect('/edit_page')
     return redirect('/')
 
 
