@@ -47,6 +47,7 @@
 <v t="leo.20190515144237.22"><vh>flvplayer (flaskapp.py)</vh></v>
 <v t="leo.20190515144237.23"><vh>generate_pages (flaskapp.py)</vh></v>
 <v t="leo.20190515144237.24"><vh>get_page (flaskapp.py)</vh></v>
+<v t="yen.20210708234039.1"><vh>get_page2 (flaskapp.py)</vh></v>
 <v t="leo.20190515144237.26"><vh>image_delete_file (flaskapp.py)</vh></v>
 <v t="leo.20190515144237.27"><vh>image_doDelete (flaskapp.py)</vh></v>
 <v t="leo.20190515144237.28"><vh>image_list (flaskapp.py)</vh></v>
@@ -3019,5 +3020,129 @@ try using fixed secret_key </t>
 
 # 定義 password_generator() 後就可以產生 token
 token = password_generator()</t>
+<t tx="yen.20210708234039.1">def get_page2(heading, head, edit, get_page_content = None):
+    not_used_head, level, page = parse_content()
+    # 直接在此將 /images/ 換為 ./../images/, /downloads/ 換為 ./../downloads/, 以 content 為基準的相對目錄設定
+
+    page = [w.replace('src="/images/', 'src="./../images/') for w in page]
+    page = [w.replace('href="/downloads/', 'href="./../downloads/') for w in page]
+    # 假如有 src="/static/ace/ 則換為 src="./../static/ace/
+    page = [w.replace('src="/static/', 'src="./../cmsimde/static/') for w in page]
+    # 假如有 src=/downloads 則換為 src=./../../downloads
+    page = [w.replace('src="/downloads', 'src="./../downloads') for w in page]
+    # 假如有 pythonpath:['/static/' 則換為 ./../cmsimde/static/
+    page = [w.replace("pythonpath:['/static/'", "pythonpath:['./../cmsimde/static/'") for w in page]
+    # 假如有 /get_page 則需額外使用 regex 進行字串代換, 表示要在靜態網頁直接取網頁 (尚未完成)
+    #page = [w.replace('/get_page', '') for w in page]
+
+    directory = render_menu2(head, level, page)
+    if heading is None:
+        heading = head[0]
+    # 因為同一 heading 可能有多頁, 因此不可使用 head.index(heading) 搜尋 page_order
+    page_order_list, page_content_list = search_content(head, page, heading)
+    if get_page_content != None:
+        get_page_content.extend(page_content_list)
+    return_content = ""
+    pagedata = ""
+    outstring = ""
+    outstring_duplicate = ""
+    pagedata_duplicate = ""
+    outstring_list = []
+    for i in range(len(page_order_list)):
+        page_order = page_order_list[i]
+        if page_order == 0:
+            last_page = ""
+        else:
+            #last_page = head[page_order-1]+ " &lt;&lt; &lt;a href='/get_page/" + head[page_order-1] + "'&gt;Previous&lt;/a&gt;"
+            last_page = head[page_order-1] + " &lt;&lt; &lt;a href='"+head[page_order-1] + ".html'&gt;Previous&lt;/a&gt;"
+        if page_order == len(head) - 1:
+            # no next page
+            next_page = ""
+        else:
+            #next_page = "&lt;a href='/get_page/"+head[page_order+1] + "'&gt;Next&lt;/a&gt; &gt;&gt; " + head[page_order+1]
+            next_page = "&lt;a href='" + head[page_order+1] + ".html'&gt;Next&lt;/a&gt; &gt;&gt; " + head[page_order+1]
+        if len(page_order_list) &gt; 1:
+            return_content += last_page + " " + next_page + "&lt;br /&gt;&lt;h1&gt;" + \
+                                      heading + "&lt;/h1&gt;" + page_content_list[i] + \
+                                      "&lt;br /&gt;" + last_page + " "+ next_page + "&lt;br /&gt;&lt;hr&gt;"
+            pagedata_duplicate = "&lt;h"+level[page_order] + "&gt;" + heading + "&lt;/h" + level[page_order]+"&gt;"+page_content_list[i]
+            outstring_list.append(last_page + " " + next_page + "&lt;br /&gt;" + tinymce_editor(directory, html_escape(pagedata_duplicate), page_order))
+        else:
+            return_content += last_page + " " + next_page + "&lt;br /&gt;&lt;h1&gt;" + \
+                                      heading + "&lt;/h1&gt;" + page_content_list[i] + \
+                                      "&lt;br /&gt;" + last_page + " " + next_page
+
+        pagedata += "&lt;h" + level[page_order] + "&gt;" + heading + \
+                          "&lt;/h" + level[page_order] + "&gt;" + page_content_list[i]
+        # 利用 html_escape() 將 specialchar 轉成只能顯示的格式
+        outstring += last_page + " " + next_page + "&lt;br /&gt;" + tinymce_editor(directory, html_escape(pagedata), page_order)
+    
+    # edit=0 for viewpage
+    if edit == 0:
+        return set_css2() + '''&lt;div class='container'&gt;&lt;nav&gt;
+        '''+ \
+        directory + "&lt;div id=\"tipue_search_content\"&gt;" + return_content + \
+        '''&lt;/div&gt;
+        
+    &lt;!-- footer --&gt;
+      &lt;div class="container"&gt;
+        &lt;div class="row pt-3 mx-auto"&gt;
+            &lt;p&gt;
+            &lt;!-- Link back to Colorlib can't be removed. Template is licensed under CC BY 3.0. --&gt;
+            Copyright &amp;copy;&lt;script&gt;document.write(new Date().getFullYear());&lt;/script&gt; All rights reserved | This template is made with &lt;i class="icon-heart" aria-hidden="true"&gt;&lt;/i&gt; by &lt;a href="https://colorlib.com" target="_blank" &gt;Colorlib&lt;/a&gt;
+            &lt;!-- Link back to Colorlib can't be removed. Template is licensed under CC BY 3.0. --&gt;
+            &lt;/p&gt;
+        &lt;/div&gt;
+      &lt;/div&gt;
+    &lt;!-- for footer --&gt;
+    
+        &lt;/div&gt; &lt;!-- for site wrap --&gt;
+            &lt;!-- &lt;script src="../cmsimde/static/chimper/js/jquery-3.3.1.min.js"&gt;&lt;/script&gt; --&gt;
+            &lt;script src="../cmsimde/static/chimper/js/jquery-migrate-3.0.1.min.js"&gt;&lt;/script&gt;
+            &lt;script src="../cmsimde/static/chimper/js/jquery-ui.js"&gt;&lt;/script&gt;
+            &lt;script src="../cmsimde/static/chimper/js/popper.min.js"&gt;&lt;/script&gt;
+            &lt;script src="../cmsimde/static/chimper/js/bootstrap.min.js"&gt;&lt;/script&gt;
+            &lt;script src="../cmsimde/static/chimper/js/owl.carousel.min.js"&gt;&lt;/script&gt;
+            &lt;script src="../cmsimde/static/chimper/js/jquery.stellar.min.js"&gt;&lt;/script&gt;
+            &lt;script src="../cmsimde/static/chimper/js/jquery.countdown.min.js"&gt;&lt;/script&gt;
+            &lt;script src="../cmsimde/static/chimper/js/jquery.magnific-popup.min.js"&gt;&lt;/script&gt;
+            &lt;script src="../cmsimde/static/chimper/js/bootstrap-datepicker.min.js"&gt;&lt;/script&gt;
+            &lt;script src="../cmsimde/static/chimper/js/aos.js"&gt;&lt;/script&gt;
+            &lt;!--
+            &lt;script src="../cmsimde/static/chimper/js/typed.js"&gt;&lt;/script&gt;
+                    &lt;script&gt;
+                    var typed = new Typed('.typed-words', {
+                    strings: ["Web Apps"," WordPress"," Mobile Apps"],
+                    typeSpeed: 80,
+                    backSpeed: 80,
+                    backDelay: 4000,
+                    startDelay: 1000,
+                    loop: true,
+                    showCursor: true
+                    });
+                    &lt;/script&gt;
+            --&gt;
+            &lt;script src="../cmsimde/static/chimper/js/main.js"&gt;&lt;/script&gt;
+        ''' + checkMath() + '''&lt;/body&gt;&lt;/html&gt;
+        '''
+    # enter edit mode
+    else:
+        # check if administrator
+        if not isAdmin():
+            redirect(url_for('login'))
+        else:
+            if len(page_order_list) &gt; 1:
+                # 若碰到重複頁面頁印, 且要求編輯, 則導向 edit_page
+                #return redirect("/edit_page")
+                for i in range(len(page_order_list)):
+                    outstring_duplicate += outstring_list[i] + "&lt;br /&gt;&lt;hr&gt;"
+                return outstring_duplicate
+            else:
+            #pagedata = "&lt;h" + level[page_order]+"&gt;" + heading + "&lt;/h" + level[page_order] + "&gt;" + search_content(head, page, heading)
+            #outstring = last_page + " " + next_page + "&lt;br /&gt;" + tinymce_editor(directory, html_escape(pagedata), page_order)
+                return outstring
+
+
+</t>
 </tnodes>
 </leo_file>

@@ -933,6 +933,129 @@ def get_page(heading, edit):
 '''
 # before add tipue search function
 #def get_page2(heading, head, edit):
+def get_page2(heading, head, edit, get_page_content = None):
+    not_used_head, level, page = parse_content()
+    # 直接在此將 /images/ 換為 ./../images/, /downloads/ 換為 ./../downloads/, 以 content 為基準的相對目錄設定
+
+    page = [w.replace('src="/images/', 'src="./../images/') for w in page]
+    page = [w.replace('href="/downloads/', 'href="./../downloads/') for w in page]
+    # 假如有 src="/static/ace/ 則換為 src="./../static/ace/
+    page = [w.replace('src="/static/', 'src="./../cmsimde/static/') for w in page]
+    # 假如有 src=/downloads 則換為 src=./../../downloads
+    page = [w.replace('src="/downloads', 'src="./../downloads') for w in page]
+    # 假如有 pythonpath:['/static/' 則換為 ./../cmsimde/static/
+    page = [w.replace("pythonpath:['/static/'", "pythonpath:['./../cmsimde/static/'") for w in page]
+    # 假如有 /get_page 則需額外使用 regex 進行字串代換, 表示要在靜態網頁直接取網頁 (尚未完成)
+    #page = [w.replace('/get_page', '') for w in page]
+
+    directory = render_menu2(head, level, page)
+    if heading is None:
+        heading = head[0]
+    # 因為同一 heading 可能有多頁, 因此不可使用 head.index(heading) 搜尋 page_order
+    page_order_list, page_content_list = search_content(head, page, heading)
+    if get_page_content != None:
+        get_page_content.extend(page_content_list)
+    return_content = ""
+    pagedata = ""
+    outstring = ""
+    outstring_duplicate = ""
+    pagedata_duplicate = ""
+    outstring_list = []
+    for i in range(len(page_order_list)):
+        page_order = page_order_list[i]
+        if page_order == 0:
+            last_page = ""
+        else:
+            #last_page = head[page_order-1]+ " << <a href='/get_page/" + head[page_order-1] + "'>Previous</a>"
+            last_page = head[page_order-1] + " << <a href='"+head[page_order-1] + ".html'>Previous</a>"
+        if page_order == len(head) - 1:
+            # no next page
+            next_page = ""
+        else:
+            #next_page = "<a href='/get_page/"+head[page_order+1] + "'>Next</a> >> " + head[page_order+1]
+            next_page = "<a href='" + head[page_order+1] + ".html'>Next</a> >> " + head[page_order+1]
+        if len(page_order_list) > 1:
+            return_content += last_page + " " + next_page + "<br /><h1>" + \
+                                      heading + "</h1>" + page_content_list[i] + \
+                                      "<br />" + last_page + " "+ next_page + "<br /><hr>"
+            pagedata_duplicate = "<h"+level[page_order] + ">" + heading + "</h" + level[page_order]+">"+page_content_list[i]
+            outstring_list.append(last_page + " " + next_page + "<br />" + tinymce_editor(directory, html_escape(pagedata_duplicate), page_order))
+        else:
+            return_content += last_page + " " + next_page + "<br /><h1>" + \
+                                      heading + "</h1>" + page_content_list[i] + \
+                                      "<br />" + last_page + " " + next_page
+
+        pagedata += "<h" + level[page_order] + ">" + heading + \
+                          "</h" + level[page_order] + ">" + page_content_list[i]
+        # 利用 html_escape() 將 specialchar 轉成只能顯示的格式
+        outstring += last_page + " " + next_page + "<br />" + tinymce_editor(directory, html_escape(pagedata), page_order)
+    
+    # edit=0 for viewpage
+    if edit == 0:
+        return set_css2() + '''<div class='container'><nav>
+        '''+ \
+        directory + "<div id=\"tipue_search_content\">" + return_content + \
+        '''</div>
+        
+    <!-- footer -->
+      <div class="container">
+        <div class="row pt-3 mx-auto">
+            <p>
+            <!-- Link back to Colorlib can't be removed. Template is licensed under CC BY 3.0. -->
+            Copyright &copy;<script>document.write(new Date().getFullYear());</script> All rights reserved | This template is made with <i class="icon-heart" aria-hidden="true"></i> by <a href="https://colorlib.com" target="_blank" >Colorlib</a>
+            <!-- Link back to Colorlib can't be removed. Template is licensed under CC BY 3.0. -->
+            </p>
+        </div>
+      </div>
+    <!-- for footer -->
+    
+        </div> <!-- for site wrap -->
+            <!-- <script src="../cmsimde/static/chimper/js/jquery-3.3.1.min.js"></script> -->
+            <script src="../cmsimde/static/chimper/js/jquery-migrate-3.0.1.min.js"></script>
+            <script src="../cmsimde/static/chimper/js/jquery-ui.js"></script>
+            <script src="../cmsimde/static/chimper/js/popper.min.js"></script>
+            <script src="../cmsimde/static/chimper/js/bootstrap.min.js"></script>
+            <script src="../cmsimde/static/chimper/js/owl.carousel.min.js"></script>
+            <script src="../cmsimde/static/chimper/js/jquery.stellar.min.js"></script>
+            <script src="../cmsimde/static/chimper/js/jquery.countdown.min.js"></script>
+            <script src="../cmsimde/static/chimper/js/jquery.magnific-popup.min.js"></script>
+            <script src="../cmsimde/static/chimper/js/bootstrap-datepicker.min.js"></script>
+            <script src="../cmsimde/static/chimper/js/aos.js"></script>
+            <!--
+            <script src="../cmsimde/static/chimper/js/typed.js"></script>
+                    <script>
+                    var typed = new Typed('.typed-words', {
+                    strings: ["Web Apps"," WordPress"," Mobile Apps"],
+                    typeSpeed: 80,
+                    backSpeed: 80,
+                    backDelay: 4000,
+                    startDelay: 1000,
+                    loop: true,
+                    showCursor: true
+                    });
+                    </script>
+            -->
+            <script src="../cmsimde/static/chimper/js/main.js"></script>
+        ''' + checkMath() + '''</body></html>
+        '''
+    # enter edit mode
+    else:
+        # check if administrator
+        if not isAdmin():
+            redirect(url_for('login'))
+        else:
+            if len(page_order_list) > 1:
+                # 若碰到重複頁面頁印, 且要求編輯, 則導向 edit_page
+                #return redirect("/edit_page")
+                for i in range(len(page_order_list)):
+                    outstring_duplicate += outstring_list[i] + "<br /><hr>"
+                return outstring_duplicate
+            else:
+            #pagedata = "<h" + level[page_order]+">" + heading + "</h" + level[page_order] + ">" + search_content(head, page, heading)
+            #outstring = last_page + " " + next_page + "<br />" + tinymce_editor(directory, html_escape(pagedata), page_order)
+                return outstring
+
+
 @app.route('/image_delete_file', methods=['POST'])
 def image_delete_file():
     if not isAdmin():
