@@ -621,8 +621,14 @@ def checkLogin():
     if hashed_password == saved_password:
         # 為了讓多 cmsimde 可以在同一個瀏覽器共存, 因此讓每一個 session 不同
         session['admin_'+token] = 1
-        return redirect('/edit_page')
+        # try to set cookie too
+        response = make_response(redirect('/edit_page'))
+        session_value =  os.urandom(24).hex()
+        response.set_cookie('admin_'+token, session_value)
+        return response
+        #return redirect('/edit_page')
     return redirect('/')
+
 
  
 </t>
@@ -3007,7 +3013,9 @@ def password_generator(size=4, chars=string.ascii_lowercase + string.digits):
     
 在 admin session 後面加上一個四字 token.
 
-password_generator() 函式需要 random 與 string 模組.</t>
+password_generator() 函式需要 random 與 string 模組.
+
+在 checkLogin() 中也加入 set_cookie</t>
 <t tx="yen.20210708085937.1">def password_generator(size=4, chars=string.ascii_lowercase + string.digits):
     return ''.join(random.choice(chars) for _ in range(size))
 

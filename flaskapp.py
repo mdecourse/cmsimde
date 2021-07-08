@@ -105,8 +105,14 @@ def checkLogin():
     if hashed_password == saved_password:
         # 為了讓多 cmsimde 可以在同一個瀏覽器共存, 因此讓每一個 session 不同
         session['admin_'+token] = 1
-        return redirect('/edit_page')
+        # try to set cookie too
+        response = make_response(redirect('/edit_page'))
+        session_value =  os.urandom(24).hex()
+        response.set_cookie('admin_'+token, session_value)
+        return response
+        #return redirect('/edit_page')
     return redirect('/')
+
 
  
 def checkMath():
