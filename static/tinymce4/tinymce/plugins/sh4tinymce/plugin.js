@@ -65,6 +65,7 @@ tinymce.PluginManager.add('sh4tinymce', function(editor,url) {
 				{text: 'PowerShell',	value: 'ps'},
 				{text: 'Python',		value: 'py'},
 				{text: 'Ruby',			value: 'ruby'},
+                {text: 'Rust',			value: 'rust'},
 				{text: 'Scala',			value: 'scala'},
 				{text: 'SQL',			value: 'sql'},
 				{text: 'Text',			value: 'plain'},
