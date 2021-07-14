@@ -1590,7 +1590,7 @@ def _remove_h123_attrs(soup):
             if tag_order == 0:
                 tag.string = "First"
             else:
-                # 若該標註非排序第一, 則移除無內容的標題標註
+          # 若該標註非排序第一, 則移除無內容的標題標註
                 tag.extract()
         # 針對單一元件的標題標註
         elif len(tag.contents) == 1:
@@ -2379,6 +2379,7 @@ def syntaxhighlight():
 <script type="text/javascript" src="/static/syntaxhighlighter/shBrushCss.js"></script>
 <script type="text/javascript" src="/static/syntaxhighlighter/shBrushCSharp.js"></script>
 <script type="text/javascript" src="/static/syntaxhighlighter/shBrushDart.js"></script>
+<script type="text/javascript" src="/static/syntaxhighlighter/shBrushRust.js"></script>
 <link type="text/css" rel="stylesheet" href="/static/syntaxhighlighter/css/shCoreDefault.css"/>
 <script type="text/javascript">SyntaxHighlighter.all();</script>
 <!-- 暫時不用
@@ -2417,6 +2418,7 @@ def syntaxhighlight2():
 <script type="text/javascript" src="./../cmsimde/static/syntaxhighlighter/shBrushCss.js"></script>
 <script type="text/javascript" src="./../cmsimde/static/syntaxhighlighter/shBrushCSharp.js"></script>
 <script type="text/javascript" src="./../cmsimde/static/syntaxhighlighter/shBrushDart.js"></script>
+<script type="text/javascript" src="./../cmsimde/static/syntaxhighlighter/shBrushRust.js"></script>
 <link type="text/css" rel="stylesheet" href="./../cmsimde/static/syntaxhighlighter/css/shCoreDefault.css"/>
 <script type="text/javascript">SyntaxHighlighter.all();</script>
 <!-- 暫時不用

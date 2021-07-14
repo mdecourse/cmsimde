@@ -14,7 +14,9 @@
 <v t="leo.20210320213557.1"><vh>cmsimde</vh></v>
 <v t="leo.20210320210418.1"><vh>assemble content.htm</vh></v>
 <v t="leo.20210424092822.1"><vh>202104 修改</vh></v>
-<v t="yen.20210707134934.1"><vh>202107 修改</vh></v>
+<v t="yen.20210707134934.1"><vh>202107 修改</vh>
+<v t="yen.20210710222238.1"><vh>標題特殊符號移除</vh></v>
+</v>
 </v>
 <v t="leo.20190515144242.1"><vh>@clean wsgi.py</vh>
 <v t="leo.20190515144254.1"><vh>Declarations (wsgi.py)</vh></v>
@@ -2108,6 +2110,7 @@ def ssavePage():
 &lt;script type="text/javascript" src="/static/syntaxhighlighter/shBrushCss.js"&gt;&lt;/script&gt;
 &lt;script type="text/javascript" src="/static/syntaxhighlighter/shBrushCSharp.js"&gt;&lt;/script&gt;
 &lt;script type="text/javascript" src="/static/syntaxhighlighter/shBrushDart.js"&gt;&lt;/script&gt;
+&lt;script type="text/javascript" src="/static/syntaxhighlighter/shBrushRust.js"&gt;&lt;/script&gt;
 &lt;link type="text/css" rel="stylesheet" href="/static/syntaxhighlighter/css/shCoreDefault.css"/&gt;
 &lt;script type="text/javascript"&gt;SyntaxHighlighter.all();&lt;/script&gt;
 &lt;!-- 暫時不用
@@ -2147,6 +2150,7 @@ img.add_border {
 &lt;script type="text/javascript" src="./../cmsimde/static/syntaxhighlighter/shBrushCss.js"&gt;&lt;/script&gt;
 &lt;script type="text/javascript" src="./../cmsimde/static/syntaxhighlighter/shBrushCSharp.js"&gt;&lt;/script&gt;
 &lt;script type="text/javascript" src="./../cmsimde/static/syntaxhighlighter/shBrushDart.js"&gt;&lt;/script&gt;
+&lt;script type="text/javascript" src="./../cmsimde/static/syntaxhighlighter/shBrushRust.js"&gt;&lt;/script&gt;
 &lt;link type="text/css" rel="stylesheet" href="./../cmsimde/static/syntaxhighlighter/css/shCoreDefault.css"/&gt;
 &lt;script type="text/javascript"&gt;SyntaxHighlighter.all();&lt;/script&gt;
 &lt;!-- 暫時不用
@@ -2246,7 +2250,7 @@ def logout():
             if tag_order == 0:
                 tag.string = "First"
             else:
-                # 若該標註非排序第一, 則移除無內容的標題標註
+          # 若該標註非排序第一, 則移除無內容的標題標註
                 tag.extract()
         # 針對單一元件的標題標註
         elif len(tag.contents) == 1:
@@ -3001,10 +3005,13 @@ get_page2 中的字串代換, 增加在動態與靜態網頁, 可自行擷取網
 <t tx="yen.20210704112438.1">@app.route('/favicon.ico')
 def favicon():
     return send_from_directory(_curdir, 'favicon.ico', mimetype='image/vnd.microsoft.icon')</t>
-<t tx="yen.20210707134934.1">因為需要在 download 中導入其他 brython .py 模組, 因此刪除 ]
+<t tx="yen.20210707134934.1"># 因為需要在 download 中導入其他 brython .py 模組, 因此刪除 ]
 
 page = [w.replace("pythonpath:['/static/'", "pythonpath:['./../cmsimde/static/'") for w in page]
 
+# 因為最後發現 browser cookie 取決於 secret_key, 只要採用固定的 secret_key, 就可以多個近端的動態系統採用不同 port 啟動. 因此以下修改 admin 名稱的作法並不需要. 但也不打算改回來.
+
+# 以下修改仍然保留
 因為要在同一個 browser session 同時開啟多個 cmsimde 動態網站, 因此利用
 
 def password_generator(size=4, chars=string.ascii_lowercase + string.digits):
@@ -3013,8 +3020,7 @@ def password_generator(size=4, chars=string.ascii_lowercase + string.digits):
 在 admin session 後面加上一個四字 token.
 
 password_generator() 函式需要 random 與 string 模組.
-
-try using fixed secret_key </t>
+</t>
 <t tx="yen.20210708085937.1">def password_generator(size=4, chars=string.ascii_lowercase + string.digits):
     return ''.join(random.choice(chars) for _ in range(size))
 
@@ -3144,5 +3150,8 @@ token = password_generator()</t>
 
 
 </t>
+<t tx="yen.20210710222238.1">因為之前常有用戶在標題中放入特殊符號或 html 標註而無法順利完成分頁.
+
+本次 2021.07.10 要將用戶選用的標題中特殊符號予以移除</t>
 </tnodes>
 </leo_file>
