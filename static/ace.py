@@ -64,7 +64,9 @@ class Editor():
         try:
             #ns = {'__name__':'__main__'}
             # 以 self.editor_id 名稱執行程式
-            ns = {'__name__': self.editor_id}
+            #ns = {'__name__': self.editor_id}
+            # execute program under the __main__ name
+            ns = {'__name__':'__main__'}
             exec(src, ns)
             state = 1
         except Exception as exc:
