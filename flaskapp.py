@@ -2294,7 +2294,6 @@ def set_css():
 <!-- for wink3 -->
 <link rel="stylesheet" type="text/css" href="/static/winkPlayer.css" />
 <script type="text/javascript" src="/static/winkPlayer.js"></script>
-<script type="text/javascript" src="/static/wink.js"></script>
 <script type="text/javascript">
 $(function(){
     $("ul.topmenu> li:has(ul) > a").append('<div class="arrow-right"></div>');
@@ -2386,7 +2385,6 @@ def set_css2():
         <!-- for Wink3 -->
         <link rel="stylesheet" type="text/css" href="./../cmsimde/static/winkPlayer.css" />
         <script type="text/javascript" src="./../cmsimde/static/winkPlayer.js"></script>
-        <script type="text/javascript" src="./../cmsimde/static/wink.js"></script>
         <script>
             /* original tipuesearch
             $(document).ready(function() {

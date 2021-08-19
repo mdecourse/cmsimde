@@ -6,10 +6,11 @@ function WinkVideo(html5VideoElement) {
 
   // Sanity checks.
   var videoData = this.getData();
-  if (!videoData) {
-    window.alert("Wink: Please set 'data-varname' and 'data-dirname' attributes of the video element.");
-    return;
-  }
+  // use different videoData for each Wink3 video under CMSiMDE
+  //if (!videoData) {
+    //window.alert("Wink: Please set 'data-varname' and 'data-dirname' attributes of the video element.");
+    //return;
+  //}
   if (videoData.dataVersion > 1) {
     window.alert("Wink: Data version doesn't match this player. Please render your Wink project again.");
     return;

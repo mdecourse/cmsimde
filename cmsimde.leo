@@ -1963,7 +1963,6 @@ window.location= 'https://' + location.host + location.pathname + location.searc
 &lt;!-- for wink3 --&gt;
 &lt;link rel="stylesheet" type="text/css" href="/static/winkPlayer.css" /&gt;
 &lt;script type="text/javascript" src="/static/winkPlayer.js"&gt;&lt;/script&gt;
-&lt;script type="text/javascript" src="/static/wink.js"&gt;&lt;/script&gt;
 &lt;script type="text/javascript"&gt;
 $(function(){
     $("ul.topmenu&gt; li:has(ul) &gt; a").append('&lt;div class="arrow-right"&gt;&lt;/div&gt;');
@@ -2056,7 +2055,6 @@ window.location= 'https://' + location.host + location.pathname + location.searc
         &lt;!-- for Wink3 --&gt;
         &lt;link rel="stylesheet" type="text/css" href="./../cmsimde/static/winkPlayer.css" /&gt;
         &lt;script type="text/javascript" src="./../cmsimde/static/winkPlayer.js"&gt;&lt;/script&gt;
-        &lt;script type="text/javascript" src="./../cmsimde/static/wink.js"&gt;&lt;/script&gt;
         &lt;script&gt;
             /* original tipuesearch
             $(document).ready(function() {
