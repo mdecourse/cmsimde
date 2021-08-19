@@ -1960,6 +1960,10 @@ window.location= 'https://' + location.host + location.pathname + location.searc
 
     outstring += '''
 &lt;script src="/static/jquery.js"&gt;&lt;/script&gt;
+&lt;!-- for wink3 --&gt;
+&lt;link rel="stylesheet" type="text/css" href="/static/winkPlayer.css" /&gt;
+&lt;script type="text/javascript" src="/static/winkPlayer.js"&gt;&lt;/script&gt;
+&lt;script type="text/javascript" src="/static/wink.js"&gt;&lt;/script&gt;
 &lt;script type="text/javascript"&gt;
 $(function(){
     $("ul.topmenu&gt; li:has(ul) &gt; a").append('&lt;div class="arrow-right"&gt;&lt;/div&gt;');
@@ -2049,6 +2053,10 @@ window.location= 'https://' + location.host + location.pathname + location.searc
         &lt;script src="tipuesearch_content.js"&gt;&lt;/script&gt;
         &lt;link rel="stylesheet" href="./../cmsimde/static/tipuesearch/css/tipuesearch.css"&gt;
         &lt;script src="./../cmsimde/static/tipuesearch/tipuesearch.js"&gt;&lt;/script&gt;
+        &lt;!-- for Wink3 --&gt;
+        &lt;link rel="stylesheet" type="text/css" href="./../cmsimde/static/winkPlayer.css" /&gt;
+        &lt;script type="text/javascript" src="./../cmsimde/static/winkPlayer.js"&gt;&lt;/script&gt;
+        &lt;script type="text/javascript" src="./../cmsimde/static/wink.js"&gt;&lt;/script&gt;
         &lt;script&gt;
             /* original tipuesearch
             $(document).ready(function() {
@@ -3235,6 +3243,8 @@ token = password_generator()</t>
     page = [w.replace('src="/downloads', 'src="./../downloads') for w in page]
     # 假如有 pythonpath:['/static/' 則換為 ./../cmsimde/static/
     page = [w.replace("pythonpath:['/static/'", "pythonpath:['./../cmsimde/static/'") for w in page]
+    # 針對 wink3 假如有 data-dirname="/static" 換為 data-dirname="./../cmsimde/static"
+    page = [w.replace("data-dirname=\"/static\"", "data-dirname=\"./../cmsimde/static\"") for w in page]
     # 假如有 /get_page 則需額外使用 regex 進行字串代換, 表示要在靜態網頁直接取網頁 (尚未完成)
     #page = [w.replace('/get_page', '') for w in page]
 

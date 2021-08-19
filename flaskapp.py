@@ -1003,6 +1003,8 @@ def get_page2(heading, head, edit, get_page_content = None):
     page = [w.replace('src="/downloads', 'src="./../downloads') for w in page]
     # 假如有 pythonpath:['/static/' 則換為 ./../cmsimde/static/
     page = [w.replace("pythonpath:['/static/'", "pythonpath:['./../cmsimde/static/'") for w in page]
+    # 針對 wink3 假如有 data-dirname="/static" 換為 data-dirname="./../cmsimde/static"
+    page = [w.replace("data-dirname=\"/static\"", "data-dirname=\"./../cmsimde/static\"") for w in page]
     # 假如有 /get_page 則需額外使用 regex 進行字串代換, 表示要在靜態網頁直接取網頁 (尚未完成)
     #page = [w.replace('/get_page', '') for w in page]
 
@@ -2289,6 +2291,10 @@ def set_css():
 
     outstring += '''
 <script src="/static/jquery.js"></script>
+<!-- for wink3 -->
+<link rel="stylesheet" type="text/css" href="/static/winkPlayer.css" />
+<script type="text/javascript" src="/static/winkPlayer.js"></script>
+<script type="text/javascript" src="/static/wink.js"></script>
 <script type="text/javascript">
 $(function(){
     $("ul.topmenu> li:has(ul) > a").append('<div class="arrow-right"></div>');
@@ -2377,6 +2383,10 @@ def set_css2():
         <script src="tipuesearch_content.js"></script>
         <link rel="stylesheet" href="./../cmsimde/static/tipuesearch/css/tipuesearch.css">
         <script src="./../cmsimde/static/tipuesearch/tipuesearch.js"></script>
+        <!-- for Wink3 -->
+        <link rel="stylesheet" type="text/css" href="./../cmsimde/static/winkPlayer.css" />
+        <script type="text/javascript" src="./../cmsimde/static/winkPlayer.js"></script>
+        <script type="text/javascript" src="./../cmsimde/static/wink.js"></script>
         <script>
             /* original tipuesearch
             $(document).ready(function() {
