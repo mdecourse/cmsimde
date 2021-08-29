@@ -1,7 +1,8 @@
 /* Base */
+/* original color is #4d4d4d */
 body {
   line-height: 1.7;
-  color: #4d4d4d;
+  color: #000;
   font-weight: 400;
   font-size: 1rem; }
 
@@ -13,12 +14,36 @@ body {
   background: #000;
   color: #fff; }
 
+/* original setting */
 a {
   -webkit-transition: .3s all ease;
   -o-transition: .3s all ease;
   transition: .3s all ease; }
   a:hover {
     text-decoration: none; }
+
+/* new setting starts for <div id="tipue_search_content"></div> */
+#tipue_search_content a {
+    color: #212226;
+    text-decoration: none;
+    font-weight: 400;
+    transition: all ease-out 0.2s
+}
+
+#tipue_search_content a:hover,
+#tipue_search_content a:focus {
+    color: #000
+}
+
+#tipue_search_content a {
+    border-bottom: 1px solid #f26a3d
+}
+#tipue_search_content a:hover,
+#tipue_search_content a:focus {
+    color: #f26a3d
+}
+
+/* new setting ends */
 
 h1, h2, h3, h4, h5,
 .h1, .h2, .h3, .h4, .h5 {
