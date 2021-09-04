@@ -2124,7 +2124,8 @@ def savePage():
     # 在插入新頁面資料前, 先複製 content.htm 一分到 content_backup.htm
     shutil.copy2(config_dir + "content.htm", config_dir + "content_backup.htm")
     # in Windows client operator, to avoid textarea add extra \n
-    page_content = page_content.replace("\n","")
+    # for ajax save comment the next line
+    #page_content = page_content.replace("\n","")
     with open(config_dir + "content.htm", "w", encoding="utf-8") as f:
         f.write(page_content)
     return redirect("/edit_page")
@@ -2494,7 +2495,8 @@ def ssavePage():
     if page_content is None:
         return error_log("no content to save!")
     # 請注意, 若啟用 fullpage plugin 這裡的 page_content tinymce4 會自動加上 html 頭尾標註
-    page_content = page_content.replace("\n","")
+    # for ajax save comment the next line
+    #page_content = page_content.replace("\n","")
     head, level, page = parse_content()
     original_head_title = head[int(page_order)]
     # 在插入新頁面資料前, 先複製 content.htm 一分到 content_backup.htm
@@ -2639,26 +2641,165 @@ def tinymce_editor(menu_input=None, editor_content=None, page_order=None):
     # edit all pages
     if page_order is None:
         outstring = editor + "<div class='container'><nav>" + \
-                        menu_input + "</nav><section><form method='post' action='savePage'> \
+                        menu_input + "</nav><section><form onsubmit='return save_all_data(this)'> \
                         <textarea class='simply-editor' name='page_content' cols='50' rows='15'>" +  \
-                        editor_content + "</textarea><input type='submit' value='save'> \
-                        </form></section></body></html>"
+                        editor_content + "</textarea><input type='button' onClick='save_all()' value='save'>"
+        outstring +="""
+        <script>
+        // leave  warning when modification not saved
+        window.addEventListener('beforeunload', function(e) {
+        var myPageIsDirty = tinymce.activeEditor.isDirty()
+        if(myPageIsDirty) {
+            //following two lines will cause the browser to ask the user if they
+            //want to leave. The text of this dialog is controlled by the browser.
+            e.preventDefault(); //per the standard
+            e.returnValue = ''; //required for Chrome
+        }
+        //else: user is allowed to leave without a warning dialog
+        });
+        
+        function tempAlert(msg,duration)
+            {
+             var el = document.createElement("div");
+             el.setAttribute("style","position:absolute;top:40%;left:20%;background-color:lightgreen;");
+             el.innerHTML = msg;
+             setTimeout(function(){
+              el.parentNode.removeChild(el);
+             },duration);
+             document.body.appendChild(el);
+            }
+        
+        function save_all(){
+            tinymce.activeEditor.execCommand('mceSave');
+        }
+        
+        function save_all_data(form) {
+                var page_content = $('textarea#page_content').val();
+                
+                $.ajax({
+                    type: "POST",
+                    url: "/savePage",
+                    data: {"page_content": page_content},
+                    error: function(XMLHttpRequest, textStatus, errorThrown) {
+                        alert(XMLHttpRequest.status);
+                        alert(XMLHttpRequest.readyState);
+                        alert(textStatus);
+                    },
+                    success: function() {
+                        //document.getElementById("notice").innerHTML = "saved!";
+                        parser = new DOMParser();
+                        parsed = parser.parseFromString(page_content, 'text/html');
+                        paragraphs = parsed.querySelectorAll('h1, h2, h3');
+                        //alert(paragraphs.length)
+                        //tempAlert("saved!", 700);
+
+                        if (paragraphs.length > 1 || paragraphs.length == 0)
+                        {
+                            // when no title page will cause reload to error page
+                            //window.location.reload();
+                            document.location.href="/";
+                        }
+                        else
+                        {
+                            tempAlert("saved!", 700);
+                        }
+                    }
+                 }); 
+        }
+        </script>
+        """
+        outstring += "</form></section></body></html>"
     else:
         # add viewpage button while single page editing
         head, level, page = parse_content()
-        outstring = editor + "<div class='container'><nav>" + \
-                        menu_input+"</nav><section><form method='post' action='/ssavePage'> \
-                        <textarea class='simply-editor' name='page_content' cols='50' rows='15'>" + \
-                        editor_content + "</textarea><input type='hidden' name='page_order' value='" + \
-                        str(page_order) + "'><input type='submit' name='action' value='save'>"
+        outstring = "<p id='notice'></p>"
+        outstring  += editor + "<div class='container'><nav>" + \
+                        menu_input+"</nav><section><form onsubmit='return save_data(this)'> \
+                        <textarea class='simply-editor' id='page_content' name='page_content' cols='50' rows='15'>" + \
+                        editor_content + "</textarea><input type='hidden'  id='page_order' name='page_order' value='" + \
+                        str(page_order) + "'>"
         # add an extra collaborative save button
-        outstring += "<input type='submit' name='action' value='csave'>"
+        outstring += """<input type="button" onClick="ssave()"  value="save">"""
+        outstring += """<input type="button" onClick="cssave()"  value="csave">"""
+
+        outstring +="""
+        <script>
+        // leave  warning when modification not saved
+        window.addEventListener('beforeunload', function(e) {
+        var myPageIsDirty = tinymce.activeEditor.isDirty()
+        if(myPageIsDirty) {
+            //following two lines will cause the browser to ask the user if they
+            //want to leave. The text of this dialog is controlled by the browser.
+            e.preventDefault(); //per the standard
+            e.returnValue = ''; //required for Chrome
+        }
+        //else: user is allowed to leave without a warning dialog
+        });
+        
+        function tempAlert(msg,duration)
+            {
+             var el = document.createElement("div");
+             el.setAttribute("style","position:absolute;top:40%;left:20%;background-color:lightgreen;");
+             el.innerHTML = msg;
+             setTimeout(function(){
+              el.parentNode.removeChild(el);
+             },duration);
+             document.body.appendChild(el);
+            }
+            
+        // default action is "save"
+        var action ="save";
+        
+        function cssave(){
+            action = "csave";
+            tinymce.activeEditor.execCommand('mceSave');
+        }
+        
+        function ssave(){
+            action = "save";
+            tinymce.activeEditor.execCommand('mceSave');
+        }
+        
+        function save_data(form) {
+                var page_content = $('textarea#page_content').val();
+                var page_order = $('#page_order').val();
+                
+                $.ajax({
+                    type: "POST",
+                    url: "/ssavePage",
+                    data: {"page_content": page_content, "page_order": page_order, "action": action},
+                    error: function(XMLHttpRequest, textStatus, errorThrown) {
+                        alert(XMLHttpRequest.status);
+                        alert(XMLHttpRequest.readyState);
+                        alert(textStatus);
+                    },
+                    success: function() {
+                        //document.getElementById("notice").innerHTML = "saved!";
+                        parser = new DOMParser();
+                        parsed = parser.parseFromString(page_content, 'text/html');
+                        paragraphs = parsed.querySelectorAll('h1, h2, h3');
+                        //alert(paragraphs.length)
+                        //tempAlert("saved!", 700);
+
+                        if (paragraphs.length > 1 || paragraphs.length == 0 )
+                        {
+                            //window.location.reload();
+                            document.location.href="/";
+                        }
+                        else
+                        {
+                            tempAlert("saved!", 700);
+                        }
+                    }
+                 }); 
+        }
+        </script>
+        """
         outstring += '''<input type=button onClick="location.href='/get_page/''' + \
                     head[page_order] + \
                     ''''" value='viewpage'></form></section></body></html>'''
     return outstring
-
-
+    
 def unique(items):
     
     """Make items element unique

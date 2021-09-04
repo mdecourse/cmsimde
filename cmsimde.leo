@@ -1786,7 +1786,8 @@ def savePage():
     # 在插入新頁面資料前, 先複製 content.htm 一分到 content_backup.htm
     shutil.copy2(config_dir + "content.htm", config_dir + "content_backup.htm")
     # in Windows client operator, to avoid textarea add extra \n
-    page_content = page_content.replace("\n","")
+    # for ajax save comment the next line
+    #page_content = page_content.replace("\n","")
     with open(config_dir + "content.htm", "w", encoding="utf-8") as f:
         f.write(page_content)
     return redirect("/edit_page")
@@ -2187,7 +2188,8 @@ def ssavePage():
     if page_content is None:
         return error_log("no content to save!")
     # 請注意, 若啟用 fullpage plugin 這裡的 page_content tinymce4 會自動加上 html 頭尾標註
-    page_content = page_content.replace("\n","")
+    # for ajax save comment the next line
+    #page_content = page_content.replace("\n","")
     head, level, page = parse_content()
     original_head_title = head[int(page_order)]
     # 在插入新頁面資料前, 先複製 content.htm 一分到 content_backup.htm
@@ -2335,26 +2337,165 @@ img.add_border {
     # edit all pages
     if page_order is None:
         outstring = editor + "&lt;div class='container'&gt;&lt;nav&gt;" + \
-                        menu_input + "&lt;/nav&gt;&lt;section&gt;&lt;form method='post' action='savePage'&gt; \
+                        menu_input + "&lt;/nav&gt;&lt;section&gt;&lt;form onsubmit='return save_all_data(this)'&gt; \
                         &lt;textarea class='simply-editor' name='page_content' cols='50' rows='15'&gt;" +  \
-                        editor_content + "&lt;/textarea&gt;&lt;input type='submit' value='save'&gt; \
-                        &lt;/form&gt;&lt;/section&gt;&lt;/body&gt;&lt;/html&gt;"
+                        editor_content + "&lt;/textarea&gt;&lt;input type='button' onClick='save_all()' value='save'&gt;"
+        outstring +="""
+        &lt;script&gt;
+        // leave  warning when modification not saved
+        window.addEventListener('beforeunload', function(e) {
+        var myPageIsDirty = tinymce.activeEditor.isDirty()
+        if(myPageIsDirty) {
+            //following two lines will cause the browser to ask the user if they
+            //want to leave. The text of this dialog is controlled by the browser.
+            e.preventDefault(); //per the standard
+            e.returnValue = ''; //required for Chrome
+        }
+        //else: user is allowed to leave without a warning dialog
+        });
+        
+        function tempAlert(msg,duration)
+            {
+             var el = document.createElement("div");
+             el.setAttribute("style","position:absolute;top:40%;left:20%;background-color:lightgreen;");
+             el.innerHTML = msg;
+             setTimeout(function(){
+              el.parentNode.removeChild(el);
+             },duration);
+             document.body.appendChild(el);
+            }
+        
+        function save_all(){
+            tinymce.activeEditor.execCommand('mceSave');
+        }
+        
+        function save_all_data(form) {
+                var page_content = $('textarea#page_content').val();
+                
+                $.ajax({
+                    type: "POST",
+                    url: "/savePage",
+                    data: {"page_content": page_content},
+                    error: function(XMLHttpRequest, textStatus, errorThrown) {
+                        alert(XMLHttpRequest.status);
+                        alert(XMLHttpRequest.readyState);
+                        alert(textStatus);
+                    },
+                    success: function() {
+                        //document.getElementById("notice").innerHTML = "saved!";
+                        parser = new DOMParser();
+                        parsed = parser.parseFromString(page_content, 'text/html');
+                        paragraphs = parsed.querySelectorAll('h1, h2, h3');
+                        //alert(paragraphs.length)
+                        //tempAlert("saved!", 700);
+
+                        if (paragraphs.length &gt; 1 || paragraphs.length == 0)
+                        {
+                            // when no title page will cause reload to error page
+                            //window.location.reload();
+                            document.location.href="/";
+                        }
+                        else
+                        {
+                            tempAlert("saved!", 700);
+                        }
+                    }
+                 }); 
+        }
+        &lt;/script&gt;
+        """
+        outstring += "&lt;/form&gt;&lt;/section&gt;&lt;/body&gt;&lt;/html&gt;"
     else:
         # add viewpage button while single page editing
         head, level, page = parse_content()
-        outstring = editor + "&lt;div class='container'&gt;&lt;nav&gt;" + \
-                        menu_input+"&lt;/nav&gt;&lt;section&gt;&lt;form method='post' action='/ssavePage'&gt; \
-                        &lt;textarea class='simply-editor' name='page_content' cols='50' rows='15'&gt;" + \
-                        editor_content + "&lt;/textarea&gt;&lt;input type='hidden' name='page_order' value='" + \
-                        str(page_order) + "'&gt;&lt;input type='submit' name='action' value='save'&gt;"
+        outstring = "&lt;p id='notice'&gt;&lt;/p&gt;"
+        outstring  += editor + "&lt;div class='container'&gt;&lt;nav&gt;" + \
+                        menu_input+"&lt;/nav&gt;&lt;section&gt;&lt;form onsubmit='return save_data(this)'&gt; \
+                        &lt;textarea class='simply-editor' id='page_content' name='page_content' cols='50' rows='15'&gt;" + \
+                        editor_content + "&lt;/textarea&gt;&lt;input type='hidden'  id='page_order' name='page_order' value='" + \
+                        str(page_order) + "'&gt;"
         # add an extra collaborative save button
-        outstring += "&lt;input type='submit' name='action' value='csave'&gt;"
+        outstring += """&lt;input type="button" onClick="ssave()"  value="save"&gt;"""
+        outstring += """&lt;input type="button" onClick="cssave()"  value="csave"&gt;"""
+
+        outstring +="""
+        &lt;script&gt;
+        // leave  warning when modification not saved
+        window.addEventListener('beforeunload', function(e) {
+        var myPageIsDirty = tinymce.activeEditor.isDirty()
+        if(myPageIsDirty) {
+            //following two lines will cause the browser to ask the user if they
+            //want to leave. The text of this dialog is controlled by the browser.
+            e.preventDefault(); //per the standard
+            e.returnValue = ''; //required for Chrome
+        }
+        //else: user is allowed to leave without a warning dialog
+        });
+        
+        function tempAlert(msg,duration)
+            {
+             var el = document.createElement("div");
+             el.setAttribute("style","position:absolute;top:40%;left:20%;background-color:lightgreen;");
+             el.innerHTML = msg;
+             setTimeout(function(){
+              el.parentNode.removeChild(el);
+             },duration);
+             document.body.appendChild(el);
+            }
+            
+        // default action is "save"
+        var action ="save";
+        
+        function cssave(){
+            action = "csave";
+            tinymce.activeEditor.execCommand('mceSave');
+        }
+        
+        function ssave(){
+            action = "save";
+            tinymce.activeEditor.execCommand('mceSave');
+        }
+        
+        function save_data(form) {
+                var page_content = $('textarea#page_content').val();
+                var page_order = $('#page_order').val();
+                
+                $.ajax({
+                    type: "POST",
+                    url: "/ssavePage",
+                    data: {"page_content": page_content, "page_order": page_order, "action": action},
+                    error: function(XMLHttpRequest, textStatus, errorThrown) {
+                        alert(XMLHttpRequest.status);
+                        alert(XMLHttpRequest.readyState);
+                        alert(textStatus);
+                    },
+                    success: function() {
+                        //document.getElementById("notice").innerHTML = "saved!";
+                        parser = new DOMParser();
+                        parsed = parser.parseFromString(page_content, 'text/html');
+                        paragraphs = parsed.querySelectorAll('h1, h2, h3');
+                        //alert(paragraphs.length)
+                        //tempAlert("saved!", 700);
+
+                        if (paragraphs.length &gt; 1 || paragraphs.length == 0 )
+                        {
+                            //window.location.reload();
+                            document.location.href="/";
+                        }
+                        else
+                        {
+                            tempAlert("saved!", 700);
+                        }
+                    }
+                 }); 
+        }
+        &lt;/script&gt;
+        """
         outstring += '''&lt;input type=button onClick="location.href='/get_page/''' + \
                     head[page_order] + \
                     ''''" value='viewpage'&gt;&lt;/form&gt;&lt;/section&gt;&lt;/body&gt;&lt;/html&gt;'''
     return outstring
-
-
+    
 </t>
 <t tx="leo.20190515144238.28">def unique(items):
     
