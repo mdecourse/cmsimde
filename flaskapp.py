@@ -262,14 +262,32 @@ def download_list():
             item_per_page = 10
         else:
             item_per_page = request.args.get('item_per_page')
+        
+        # only use lower case keyword to search filename
+        session.pop('download_keyword', "")
+        
         if not request.args.get('keyword'):
             keyword = ""
         else:
             keyword = request.args.get('keyword')
-            session['download_keyword'] = keyword
-    files = os.listdir(download_dir)
-    if keyword != "":
-        files = [elem for elem in files if str(keyword) in elem]
+        
+        session['download_keyword'] = keyword
+        # turn all english char of the filenames into lower cases
+        origFiles = os.listdir(download_dir)
+        files = []
+        #lowerCaseFiles = []
+        for i in range(len(origFiles)):
+            filename = origFiles[i]
+            lowerFilename = ""
+            for j in range(len(filename)):
+                uchar = filename[j]
+                if uchar >= u'\u4e00' and uchar<=u'\u9fa5':
+                    lowerFilename += uchar
+                else:
+                    lowerFilename += uchar.lower()
+            # check if lowerFilename contains keyword
+            if str(keyword) in lowerFilename:
+                files.append(filename)    
     files.sort()
     total_rows = len(files)
     totalpage = math.ceil(total_rows/int(item_per_page))
@@ -368,7 +386,6 @@ def download_list():
 
     return set_css() + "<div class='container'><nav>" + \
                directory + "</nav><section><h1>Download List</h1>" + outstring + "<br/><br /></body></html>"
-
 
 def downloadlist_access_list(files, starti, endi):
     
@@ -1206,14 +1223,34 @@ def image_list():
             item_per_page = 10
         else:
             item_per_page = request.args.get('item_per_page')
+        
+        # only use lower case keyword to search filename
+        session.pop('image_keyword', "")
+        
         if not request.args.get('keyword'):
             keyword = ""
         else:
             keyword = request.args.get('keyword')
-            session['image_keyword'] = keyword
-    files = os.listdir(image_dir)
-    if keyword != "":
-        files = [elem for elem in files if str(keyword) in elem]
+        
+        session['image_keyword'] = keyword
+        
+        # turn all english char of the filenames into lower cases
+        origFiles = os.listdir(image_dir)
+        files = []
+        #lowerCaseFiles = []
+        for i in range(len(origFiles)):
+            filename = origFiles[i]
+            lowerFilename = ""
+            for j in range(len(filename)):
+                uchar = filename[j]
+                if uchar >= u'\u4e00' and uchar<=u'\u9fa5':
+                    lowerFilename += uchar
+                else:
+                    lowerFilename += uchar.lower()
+            # check if lowerFilename contains keyword
+            if str(keyword) in lowerFilename:
+                files.append(filename) 
+        
     files.sort()
     total_rows = len(files)
     totalpage = math.ceil(total_rows/int(item_per_page))
