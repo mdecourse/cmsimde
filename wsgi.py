@@ -12,7 +12,7 @@ import flaskapp
 # get uwsgi, ip and port variable values of flaskapp.py
 uwsgi = flaskapp.uwsgi
 ip = flaskapp.ip
-port = flaskapp.port
+port = flaskapp.dynamic_port
 
 if uwsgi:
     # run on remote site

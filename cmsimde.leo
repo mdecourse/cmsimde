@@ -85,6 +85,7 @@
 <v t="leo.20190515144238.22"><vh>sitemap2 (flaskapp.py)</vh></v>
 <v t="leo.20190515144238.23"><vh>sizeof_fmt (flaskapp.py)</vh></v>
 <v t="leo.20190515144238.24"><vh>ssavePage (flaskapp.py)</vh></v>
+<v t="yen.20210906215717.1"><vh>start_static</vh></v>
 <v t="leo.20190515144238.25"><vh>syntaxhighlight (flaskapp.py)</vh></v>
 <v t="leo.20190515144238.26"><vh>syntaxhighlight2 (flaskapp.py)</vh></v>
 <v t="leo.20190515144238.27"><vh>tinymce_editor (flaskapp.py)</vh></v>
@@ -252,6 +253,12 @@ sys.path.insert(0,parentdir)
 #_curdir = os.path.join(os.getcwd(), os.path.dirname(__file__))
 _curdir = os.path.join(os.getcwd(), parentdir)
 import init
+# for start_static function
+#import os
+import subprocess
+import threading
+import http.server, ssl
+
 try:
     # 新增 user.py 使用者自訂延伸程式功能, 先前版本若要升級至新版本, 必須新增 user.py 檔案
     import user
@@ -274,7 +281,8 @@ initobj = init.Init()
 # 取 init.py 中 Init 類別中的 class uwsgi 變數 (static variable) 設定
 uwsgi = init.Init.uwsgi
 ip = init.Init.ip
-port = init.Init.port
+dynamic_port = init.Init.dynamic_port
+static_port = init.Init.static_port
 
 # 必須先將 download_dir 設為 static_folder, 然後才可以用於 download 方法中的 app.static_folder 的呼叫
 app = Flask(__name__)
@@ -1976,6 +1984,12 @@ window.location= 'https://' + location.host + location.pathname + location.searc
 &lt;li&gt;&lt;a href="/logout"&gt;Logout&lt;/a&gt;&lt;/li&gt;
 &lt;li&gt;&lt;a href="/generate_pages"&gt;generate_pages&lt;/a&gt;&lt;/li&gt;
 '''
+    # under uwsgi mode no start_static and static_port anchor links
+    if uwsgi != True:
+        outstring += '''
+&lt;li&gt;&lt;a href="/start_static"&gt;start_static&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href="https://localhost:''' + str(static_port) +'''"&gt;''' + str(static_port) + '''&lt;/a&gt;&lt;/li&gt;
+'''
     outstring += '''
 &lt;/ul&gt;
 &lt;/confmenu&gt;&lt;/header&gt;
@@ -2035,6 +2049,13 @@ window.location= 'https://' + location.host + location.pathname + location.searc
 &lt;li&gt;&lt;a href="/download_list"&gt;file list&lt;/a&gt;&lt;/li&gt;
 &lt;li&gt;&lt;a href="/logout"&gt;logout&lt;/a&gt;&lt;/li&gt;
 &lt;li&gt;&lt;a href="/generate_pages"&gt;generate_pages&lt;/a&gt;&lt;/li&gt;
+'''
+        # under uwsgi mode no start_static and static_port  anchor links
+        # only added when user login as admin
+        if uwsgi != True:
+            outstring += '''
+&lt;li&gt;&lt;a href="/start_static"&gt;start_static&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href="https://localhost:''' + str(static_port) +'''"&gt;''' + str(static_port) + '''&lt;/a&gt;&lt;/li&gt;
 '''
     else:
         outstring += '''
@@ -2993,7 +3014,7 @@ import flaskapp
 # get uwsgi, ip and port variable values of flaskapp.py
 uwsgi = flaskapp.uwsgi
 ip = flaskapp.ip
-port = flaskapp.port
+port = flaskapp.dynamic_port
 
 </t>
 <t tx="leo.20190603204847.1"></t>
@@ -3016,7 +3037,8 @@ config_dir = _curdir + "/config/"
     uwsgi = False
     site_title = "CMSiMDE"
     ip = "127.0.0.1"
-    port = 9443
+    dynamic_port = 9443
+    static_port = 8443
     @others
 </t>
 <t tx="leo.20190603204931.3">def __init__(self):
@@ -3536,5 +3558,19 @@ token = password_generator()</t>
 <t tx="yen.20210710222238.1">因為之前常有用戶在標題中放入特殊符號或 html 標註而無法順利完成分頁.
 
 本次 2021.07.10 要將用戶選用的標題中特殊符號予以移除</t>
+<t tx="yen.20210906215717.1">@app.route('/start_static/')
+def start_static():
+    # build directory
+    #os.chdir("./../")
+    server_address = ('localhost', static_port)
+    httpd = http.server.HTTPServer(server_address, http.server.SimpleHTTPRequestHandler)
+    httpd.socket = ssl.wrap_socket(httpd.socket,
+                                   server_side=True,
+                                   certfile='./localhost.crt',
+                                   keyfile='./localhost.key',
+                                   ssl_version=ssl.PROTOCOL_TLSv1_2)
+    #print(os.getcwd())
+    #print(static_port + " https server started")
+    httpd.serve_forever()</t>
 </tnodes>
 </leo_file>

@@ -43,6 +43,12 @@ sys.path.insert(0,parentdir)
 #_curdir = os.path.join(os.getcwd(), os.path.dirname(__file__))
 _curdir = os.path.join(os.getcwd(), parentdir)
 import init
+# for start_static function
+#import os
+import subprocess
+import threading
+import http.server, ssl
+
 try:
     # 新增 user.py 使用者自訂延伸程式功能, 先前版本若要升級至新版本, 必須新增 user.py 檔案
     import user
@@ -65,7 +71,8 @@ initobj = init.Init()
 # 取 init.py 中 Init 類別中的 class uwsgi 變數 (static variable) 設定
 uwsgi = init.Init.uwsgi
 ip = init.Init.ip
-port = init.Init.port
+dynamic_port = init.Init.dynamic_port
+static_port = init.Init.static_port
 
 # 必須先將 download_dir 設為 static_folder, 然後才可以用於 download 方法中的 app.static_folder 的呼叫
 app = Flask(__name__)
@@ -2308,6 +2315,12 @@ window.location= 'https://' + location.host + location.pathname + location.searc
 <li><a href="/logout">Logout</a></li>
 <li><a href="/generate_pages">generate_pages</a></li>
 '''
+    # under uwsgi mode no start_static and static_port anchor links
+    if uwsgi != True:
+        outstring += '''
+<li><a href="/start_static">start_static</a></li>
+<li><a href="https://localhost:''' + str(static_port) +'''">''' + str(static_port) + '''</a></li>
+'''
     outstring += '''
 </ul>
 </confmenu></header>
@@ -2366,6 +2379,13 @@ window.location= 'https://' + location.host + location.pathname + location.searc
 <li><a href="/download_list">file list</a></li>
 <li><a href="/logout">logout</a></li>
 <li><a href="/generate_pages">generate_pages</a></li>
+'''
+        # under uwsgi mode no start_static and static_port  anchor links
+        # only added when user login as admin
+        if uwsgi != True:
+            outstring += '''
+<li><a href="/start_static">start_static</a></li>
+<li><a href="https://localhost:''' + str(static_port) +'''">''' + str(static_port) + '''</a></li>
 '''
     else:
         outstring += '''
@@ -2581,6 +2601,20 @@ def ssavePage():
         return redirect("/")
 
 
+@app.route('/start_static/')
+def start_static():
+    # build directory
+    #os.chdir("./../")
+    server_address = ('localhost', static_port)
+    httpd = http.server.HTTPServer(server_address, http.server.SimpleHTTPRequestHandler)
+    httpd.socket = ssl.wrap_socket(httpd.socket,
+                                   server_side=True,
+                                   certfile='./localhost.crt',
+                                   keyfile='./localhost.key',
+                                   ssl_version=ssl.PROTOCOL_TLSv1_2)
+    #print(os.getcwd())
+    #print(static_port + " https server started")
+    httpd.serve_forever()
 def syntaxhighlight():
     
     """Return syntaxhighlight needed scripts
