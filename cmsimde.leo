@@ -2186,7 +2186,7 @@ def sitemap(edit):
     # 先改為使用 render_menu3 而非 render_menu2
     sitemap = render_menu3(head, level, page, sitemap=1)
     # add tipue search id
-    return set_css2() + "&lt;div class='container'&gt;&lt;nav&gt;" + directory + \
+    return set_css2() + "&lt;div class='container-fluid'&gt;&lt;nav&gt;" + directory + \
              "&lt;/nav&gt;&lt;section&gt;&lt;h1&gt;Site Map&lt;/h1&gt;&lt;div id=\"tipue_search_content\"&gt;&lt;/div&gt;" + sitemap + \
              "&lt;/section&gt;&lt;/div&gt;&lt;/body&gt;&lt;/html&gt;"
 
@@ -3468,7 +3468,7 @@ token = password_generator()</t>
     
     # edit=0 for viewpage
     if edit == 0:
-        return set_css2() + '''&lt;div class='container'&gt;&lt;nav&gt;
+        return set_css2() + '''&lt;div class='container-fluid'&gt;&lt;nav&gt;
         '''+ \
         directory + "&lt;div id=\"tipue_search_content\"&gt;" + return_content + \
         '''&lt;/div&gt;

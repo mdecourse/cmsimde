@@ -1069,7 +1069,7 @@ def get_page2(heading, head, edit, get_page_content = None):
     
     # edit=0 for viewpage
     if edit == 0:
-        return set_css2() + '''<div class='container'><nav>
+        return set_css2() + '''<div class='container-fluid'><nav>
         '''+ \
         directory + "<div id=\"tipue_search_content\">" + return_content + \
         '''</div>
@@ -2495,7 +2495,7 @@ def sitemap2(head):
     # 先改為使用 render_menu3 而非 render_menu2
     sitemap = render_menu3(head, level, page, sitemap=1)
     # add tipue search id
-    return set_css2() + "<div class='container'><nav>" + directory + \
+    return set_css2() + "<div class='container-fluid'><nav>" + directory + \
              "</nav><section><h1>Site Map</h1><div id=\"tipue_search_content\"></div>" + sitemap + \
              "</section></div></body></html>"
 
