@@ -3035,7 +3035,7 @@ config_dir = _curdir + "/config/"
 <t tx="leo.20190603204931.2">class Init(object):
     # uwsgi as static class variable, can be accessed by Init.uwsgi
     uwsgi = False
-    site_title = "CMSiMDE"
+    site_title = "FXXXTech"
     ip = "127.0.0.1"
     dynamic_port = 9443
     static_port = 8443
