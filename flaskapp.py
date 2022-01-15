@@ -1771,7 +1771,7 @@ def _remove_h123_attrs(soup):
             # 表示單一元件的標題標註, 且標題為單一字串者
             else:
                 # 判定若其排序第一, 則將 tag.name 為 h2 或 h3 者換為 h1
-                if tag_order == 0:
+                if tag_order == 0 and tag.name != "h1":
                     tag.name = "h1"
             # 針對其餘單一字串內容的標註, 則保持原樣
         # 針對內容一個以上的標題標註
@@ -2546,6 +2546,9 @@ def ssavePage():
     # when element_format : "html", need to remove the annoying comment to prevent brython exec
     page_content = page_content.replace('// <![CDATA[', '')
     page_content = page_content.replace('// ]]>', '')
+    # page_order 就是目前編輯後希望存檔的頁面順序, 以 hidden form 提供
+    # 因為單頁編輯, 因此編輯頁面的次序在 content.htm 中為絕對值
+    # 但一旦單頁編輯後產生新的頁面, 此 page_order 就應該重新讀取, 此即是各單頁編輯若建立其他分頁內容, 無法直接以 ajax 將內容送進 content.htm, 而必須存檔後 reload 頁面.
     page_order = request.form['page_order']
     if not isAdmin():
         return redirect("/login")
@@ -2558,26 +2561,29 @@ def ssavePage():
     original_head_title = head[int(page_order)]
     # 在插入新頁面資料前, 先複製 content.htm 一分到 content_backup.htm
     shutil.copy2(config_dir + "content.htm", config_dir + "content_backup.htm")
-    with open(config_dir + "content.htm", "w", encoding="utf-8") as file:
-        for index in range(len(head)):
-            if index == int(page_order):
-                if action == "save":
-                    file.write(page_content)
+    if page_content != "":
+        with open(config_dir + "content.htm", "w", encoding="utf-8") as file:
+            for index in range(len(head)):
+                if index == int(page_order):
+                    if action == "save":
+                        file.write(page_content)
+                    else:
+                        # make orig and new html content into list
+                        newSoup = bs4.BeautifulSoup(page_content, "html.parser")
+                        newList =[str(tag) for tag in newSoup.find_all(['h1', 'h2', 'h3', 'h4', 'p', 'pre', 'ol', 'ul', 'script', 'table'])]
+                        oldPage = page[index]
+                        oldSoup = bs4.BeautifulSoup(oldPage, "html.parser")
+                        oldList =[snTosr(tag) for tag in oldSoup.find_all(['h1', 'h2', 'h3', 'h4', 'p', 'pre', 'ol', 'ul', 'script', 'table'])]
+                        mergedList = merge_sequences(oldList, newList)
+                        newContent = ""
+                        for i in range(len(mergedList)):
+                            newContent += mergedList[i]
+                        file.write(newContent)
                 else:
-                    # make orig and new html content into list
-                    newSoup = bs4.BeautifulSoup(page_content, "html.parser")
-                    newList =[str(tag) for tag in newSoup.find_all(['h1', 'h2', 'h3', 'h4', 'p', 'pre', 'ol', 'ul', 'script', 'table'])]
-                    oldPage = page[index]
-                    oldSoup = bs4.BeautifulSoup(oldPage, "html.parser")
-                    oldList =[snTosr(tag) for tag in oldSoup.find_all(['h1', 'h2', 'h3', 'h4', 'p', 'pre', 'ol', 'ul', 'script', 'table'])]
-                    mergedList = merge_sequences(oldList, newList)
-                    newContent = ""
-                    for i in range(len(mergedList)):
-                        newContent += mergedList[i]
-                    file.write(newContent)
-            else:
-                file.write("<h"+str(level[index])+ ">" + str(head[index]) + "</h" + \
-                              str(level[index])+">"+str(page[index]))
+                    file.write("<h"+str(level[index])+ ">" + str(head[index]) + "</h" + \
+                                  str(level[index])+">"+str(page[index]))
+    else:
+        return error_log("Error: no content to save!")
     # if every ssavePage generate_pages needed
     #generate_pages()
 
