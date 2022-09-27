@@ -17,6 +17,9 @@
 <v t="yen.20210707134934.1"><vh>202107 修改</vh>
 <v t="yen.20210710222238.1"><vh>標題特殊符號移除</vh></v>
 </v>
+<v t="leo.20220911144657.1"><vh>202209 修改</vh>
+<v t="leo.20220924163559.1"><vh>config/config 問題</vh></v>
+</v>
 </v>
 <v t="leo.20190515144242.1"><vh>@clean wsgi.py</vh>
 <v t="leo.20190515144254.1"><vh>Declarations (wsgi.py)</vh></v>
@@ -105,6 +108,9 @@
 <v t="leo.20190603205008.3"><vh>index (user.py)</vh></v>
 <v t="leo.20190603205008.4"><vh>threegear (user.py)</vh></v>
 </v>
+<v t="leo.20220911145040.1"><vh>@edit main.py</vh></v>
+<v t="leo.20220911145111.1"><vh>@edit nocache.py</vh></v>
+<v t="leo.20220911145241.1"><vh>@edit .gitignore</vh></v>
 </v>
 </vnodes>
 <tnodes>
@@ -306,6 +312,7 @@ try:
     app.register_blueprint(user.userapp)
 except:
     pass
+
 
 </t>
 <t tx="leo.20190515144237.10">def downloadselect_access_list(files, starti, endi):
@@ -665,7 +672,6 @@ def checkLogin():
         return redirect('/edit_page')
     return redirect('/')
 
-
  
 </t>
 <t tx="leo.20190515144237.20">@app.route('/fileaxupload', methods=['POST'])
@@ -819,6 +825,8 @@ def generate_pages():
         f.write("var tipuesearch = {\"pages\": " + str(search_content) + "};")
     # generate each page html under content directory
     return "已經將網站轉為靜態網頁. &lt;a href='/'&gt;Home&lt;/a&gt;"
+
+    
 # seperate page need heading and edit variables, if edit=1, system will enter edit mode
 # single page edit will use ssavePage to save content, it means seperate save page
 </t>
@@ -1692,6 +1700,7 @@ def download_list():
     return set_css() + "&lt;div class='container'&gt;&lt;nav&gt;" + \
                directory + "&lt;/nav&gt;&lt;section&gt;&lt;h1&gt;Download List&lt;/h1&gt;" + outstring + "&lt;br/&gt;&lt;br /&gt;&lt;/body&gt;&lt;/html&gt;"
 
+
 </t>
 <t tx="leo.20190515144237.8">def downloadlist_access_list(files, starti, endi):
     
@@ -1805,8 +1814,14 @@ def saveConfig():
             hashed_password = old_password
         else:
             hashed_password = hashlib.sha512(password.encode('utf-8')).hexdigest()
+        # save password to config/config, sitetitle to config/sitetitle
+        # save sitetitle
+        file = open(config_dir + "sitetitle", "w", encoding="utf-8")
+        file.write(site_title)
+        file.close()
+        # save password
         file = open(config_dir + "config", "w", encoding="utf-8")
-        file.write("siteTitle:" + site_title + "\npassword:" + hashed_password)
+        file.write(hashed_password)
         file.close()
         return set_css() + "&lt;div class='container'&gt;&lt;nav&gt;" + \
                  directory + "&lt;/nav&gt;&lt;section&gt;&lt;h1&gt;config file saved&lt;/h1&gt;&lt;a href='/'&gt;Home&lt;/a&gt;&lt;/body&gt;&lt;/html&gt;"
@@ -2012,7 +2027,7 @@ window.location= 'https://' + location.host + location.pathname + location.searc
 
     outstring += '''
 &lt;script src="/static/jquery.js"&gt;&lt;/script&gt;
-&lt;!-- for wink3 --&gt;
+&lt;!-- for wink3 客製化關閉--&gt;
 &lt;!--
 &lt;link rel="stylesheet" type="text/css" href="/static/winkPlayer.css" /&gt;
 &lt;script type="text/javascript" src="/static/winkPlayer.js"&gt;&lt;/script&gt;
@@ -2113,7 +2128,7 @@ window.location= 'https://' + location.host + location.pathname + location.searc
         &lt;script src="tipuesearch_content.js"&gt;&lt;/script&gt;
         &lt;link rel="stylesheet" href="./../cmsimde/static/tipuesearch/css/tipuesearch.css"&gt;
         &lt;script src="./../cmsimde/static/tipuesearch/tipuesearch.js"&gt;&lt;/script&gt;
-        &lt;!-- for Wink3 --&gt;
+        &lt;!-- for Wink3 客製化關閉 --&gt;
         &lt;!--
         &lt;link rel="stylesheet" type="text/css" href="./../cmsimde/static/winkPlayer.css" /&gt;
         &lt;script type="text/javascript" src="./../cmsimde/static/winkPlayer.js"&gt;&lt;/script&gt;
@@ -2199,6 +2214,8 @@ def sitemap(edit):
     return set_css() + "&lt;div class='container'&gt;&lt;nav&gt;" + directory + \
              "&lt;/nav&gt;&lt;section&gt;&lt;h1&gt;Site Map&lt;/h1&gt;" + sitemap + \
              "&lt;/section&gt;&lt;/div&gt;&lt;/body&gt;&lt;/html&gt;"
+
+
 </t>
 <t tx="leo.20190515144238.22">def sitemap2(head):
     
@@ -2211,7 +2228,7 @@ def sitemap(edit):
     # 先改為使用 render_menu3 而非 render_menu2
     sitemap = render_menu3(head, level, page, sitemap=1)
     # add tipue search id
-    return set_css2() + "&lt;div class='container-fluid'&gt;&lt;nav&gt;" + directory + \
+    return set_css2() + "&lt;div class='container'&gt;&lt;nav&gt;" + directory + \
              "&lt;/nav&gt;&lt;section&gt;&lt;h1&gt;Site Map&lt;/h1&gt;&lt;div id=\"tipue_search_content\"&gt;&lt;/div&gt;" + sitemap + \
              "&lt;/section&gt;&lt;/div&gt;&lt;/body&gt;&lt;/html&gt;"
 
@@ -2227,6 +2244,8 @@ def sitemap(edit):
             return "%3.1f%s" % (num, x)
         num /= 1024.0
     return "%3.1f%s" % (num, 'TB')
+
+
 </t>
 <t tx="leo.20190515144238.24">@app.route('/ssavePage', methods=['POST'])
 def ssavePage():
@@ -2347,7 +2366,6 @@ img.add_border {
 }
 &lt;/style&gt;
 '''
-
 
 
 </t>
@@ -2601,18 +2619,25 @@ def logout():
     
     """Parse config
     """
-    
+    # if there is no config/config automatically generate one with content "admin"
     if not os.path.isfile(config_dir+"config"):
         # create config file if there is no config file
         # default password is admin
-        password="admin"
+        password = "admin"
         hashed_password = hashlib.sha512(password.encode('utf-8')).hexdigest()
         with open(config_dir + "config", "w", encoding="utf-8") as f:
-            f.write("siteTitle:CMSimfly \npassword:"+hashed_password)
-    config = file_get_contents(config_dir + "config")
-    config_data = config.split("\n")
-    site_title = config_data[0].split(":")[1]
-    password = config_data[1].split(":")[1]
+            f.write(hashed_password)
+
+    # if there is no config/sitetitle automatically generate one with content "cmsimde"
+    if not os.path.isfile(config_dir+"sitetitle"):
+        # default sitetitle is "cmsimde"
+        with open(config_dir + "sitetitle", "w", encoding="utf-8") as f:
+            f.write("cmsimde")
+
+    # read site_title from config/sitetitle
+    site_title = file_get_contents(config_dir + "sitetitle")
+    password = file_get_contents(config_dir + "config")
+
     return site_title, password
 
 
@@ -2758,6 +2783,7 @@ def logout():
     page_list.append(cut)
     return head_list, level_list, page_list
 
+
 </t>
 <t tx="leo.20190515144238.7">def render_menu(head, level, page, sitemap=0):
     
@@ -2814,6 +2840,8 @@ def logout():
         current_level = this_level
     directory += "&lt;/li&gt;&lt;/ul&gt;"
     return directory
+
+
 </t>
 <t tx="leo.20190515144238.8">def render_menu2(head, level, page, sitemap=0):
     
@@ -2834,7 +2862,7 @@ def logout():
     &lt;/div&gt;
     
             &lt;header class="site-navbar py-4 bg-white" role="banner"&gt;
-              &lt;div class="container-fluid"&gt;
+              &lt;div class="container"&gt;
                 &lt;div class="row align-items-center"&gt;
                 &lt;h1&gt;''' + site_title + '''&lt;/h1&gt;
                 &lt;div class="pl-4"&gt;
@@ -2946,6 +2974,8 @@ def logout():
         &lt;/header&gt;
     '''
     return directory
+
+
 </t>
 <t tx="leo.20190515144238.9">def render_menu3(head, level, page, sitemap=0):
     
@@ -2999,6 +3029,8 @@ def logout():
         current_level = this_level
     directory += "&lt;/li&gt;&lt;/ul&gt;"
     return directory
+
+
 </t>
 <t tx="leo.20190515144242.1">#!/usr/bin/python
 
@@ -3283,6 +3315,8 @@ def merge_sequences(seq1,seq2):
     return res
 
 '''
+
+
 def merge_sequences(list1, list2):
     
     """Merge sequences
@@ -3324,6 +3358,8 @@ def merge_sequences(list1, list2):
             merged.insert(previous and merged.index(previous) + 1 or 0, e)
     # Return the merged list
     return merged
+
+
 </t>
 <t tx="leo.20201127112439.1"># replace slash n with slash r
 def snTosr(tag):
@@ -3336,7 +3372,8 @@ def snTosr(tag):
     if tag.name in ["pre", "script"]:
         return tagStr.replace("\n", "\r")
     else:
-        return tagStr</t>
+        return tagStr
+</t>
 <t tx="leo.20210320210418.1">@language python
 """
 希望組合 content.htm 前必須確定 content 目錄中各檔案符合下列需求
@@ -3388,6 +3425,21 @@ get_page2() 則與 get_page() 取頁面內容功能相同, 但用於將動態內
 get_page2 中的字串代換, 增加在動態與靜態網頁, 可自行擷取網站內容頁面連結
 
 尚未完成</t>
+<t tx="leo.20220911144657.1">此次修改主要針對 Replit 上執行的需求
+
+1. 將 nocache.py 複製一份, 放入 up_directory, 因為 Replit 要在根目錄中, 以 main.py 執行.
+2. main.py 讓 cmsimde 以 wsgi 模式執行, 內容如下
+
+# for replit
+from cmsimde import flaskapp
+from gevent.pywsgi import WSGIServer
+
+#flaskapp.app.run(host="0.0.0.0", debug=True)
+http_server = WSGIServer(('0.0.0.0', 8080), flaskapp.app)
+http_server.serve_forever()</t>
+<t tx="leo.20220924163559.1">目前將 site title 與 password 放在 config/config 檔案, 在此希望只將 password 保留在 config/config, 然後將 site title 的存取移出 config, 將其命名為 config/sitename
+
+處理 config/config 的 function 為 edit_config 與 saveConfig</t>
 <t tx="yen.20200710111924.1">def checkMath():
 
     """Use LaTeX Equation rendering
@@ -3402,7 +3454,8 @@ get_page2 中的字串代換, 增加在動態與靜態網頁, 可自行擷取網
   &lt;script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js"&gt;&lt;/script&gt;--&gt;
     '''
     return outstring
-    
+
+
 </t>
 <t tx="yen.20210704112438.1">@app.route('/favicon.ico')
 def favicon():
@@ -3410,7 +3463,8 @@ def favicon():
     """Add favicon
     """
     
-    return send_from_directory(_curdir, 'favicon.ico', mimetype='image/vnd.microsoft.icon')</t>
+    return send_from_directory(_curdir, 'favicon.ico', mimetype='image/vnd.microsoft.icon')
+</t>
 <t tx="yen.20210707134934.1"># 因為需要在 download 中導入其他 brython .py 模組, 因此刪除 ]
 
 page = [w.replace("pythonpath:['/static/'", "pythonpath:['./../cmsimde/static/'") for w in page]
@@ -3433,8 +3487,10 @@ password_generator() 函式需要 random 與 string 模組.
     """
     return ''.join(random.choice(chars) for _ in range(size))
 
+    
 # 定義 password_generator() 後就可以產生 token
-token = password_generator()</t>
+token = password_generator()
+</t>
 <t tx="yen.20210708234039.1">def get_page2(heading, head, edit, get_page_content = None):
     
     """Get page content and replace certain string for static site
@@ -3500,7 +3556,7 @@ token = password_generator()</t>
     
     # edit=0 for viewpage
     if edit == 0:
-        return set_css2() + '''&lt;div class='container-fluid'&gt;&lt;nav&gt;
+        return set_css2() + '''&lt;div class='container'&gt;&lt;nav&gt;
         '''+ \
         directory + "&lt;div id=\"tipue_search_content\"&gt;" + return_content + \
         '''&lt;/div&gt;
@@ -3581,6 +3637,9 @@ def start_static():
                                    ssl_version=ssl.PROTOCOL_TLSv1_2)
     #print(os.getcwd())
     #print(static_port + " https server started")
-    httpd.serve_forever()</t>
+    httpd.serve_forever()
+
+
+</t>
 </tnodes>
 </leo_file>

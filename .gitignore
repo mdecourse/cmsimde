@@ -1,5 +1,7 @@
 # General
 __pycache__/
+.replit
+replit.nix
 .DS_Store
 .AppleDouble
 .LSOverride
@@ -26,3 +28,5 @@ Icon
 Network Trash Folder
 Temporary Items
 .apdisk
+
+venv/
